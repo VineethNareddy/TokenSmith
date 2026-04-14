@@ -7,7 +7,15 @@ from typing import Dict
 import yaml
 import pathlib
 
-from src.preprocessing.chunking import ChunkStrategy, SectionRecursiveStrategy, SectionRecursiveConfig, ChunkConfig
+from src.preprocessing.chunking import (
+    ChunkStrategy, SectionRecursiveStrategy,
+    SectionRecursiveConfig, ChunkConfig,
+    ParagraphStrategy, ParagraphConfig,
+    FixedSizeStrategy, FixedSizeConfig,
+    ContextAwareStrategy, ContextAwareConfig,
+    HybridParagraphFixedStrategy, HybridParagraphFixedConfig,
+    HybridParagraphContextAwareStrategy, HybridParagraphContextAwareConfig,
+)
 
 @dataclass
 class RAGConfig:
@@ -16,6 +24,10 @@ class RAGConfig:
     chunk_mode: str = "recursive_sections"
     chunk_size: int = 2000
     chunk_overlap: int = 200
+    paragraph_min_chars: int = 50
+    context_window_size: int = 5
+    context_overlap_sentences: int = 1
+    hybrid_max_para_chars: int = 800
 
     # retrieval + ranking
     top_k: int = 10
@@ -82,7 +94,33 @@ class RAGConfig:
         if self.chunk_mode == "recursive_sections":
             return SectionRecursiveConfig(
                 recursive_chunk_size=self.chunk_size,
-                recursive_overlap=self.chunk_overlap
+                recursive_overlap=self.chunk_overlap,
+            )
+        elif self.chunk_mode == "paragraph":
+            return ParagraphConfig(
+                min_chars=self.paragraph_min_chars,
+            )
+        elif self.chunk_mode == "fixed_size":
+            return FixedSizeConfig(
+                chunk_size=self.chunk_size,
+                chunk_overlap=self.chunk_overlap,
+            )
+        elif self.chunk_mode == "context_aware":
+            return ContextAwareConfig(
+                window_size = self.context_window_size,
+                overlap_sentences = self.context_overlap_sentences,
+            )
+        elif self.chunk_mode == "hybrid_paragraph_fixed":
+            return HybridParagraphFixedConfig(
+                max_para_chars=self.hybrid_max_para_chars,
+                chunk_size = self.chunk_size,
+                chunk_overlap = self.chunk_overlap,
+            )
+        elif self.chunk_mode == "hybrid_paragraph_context_aware":
+            return HybridParagraphContextAwareConfig(
+                max_para_chars=self.hybrid_max_para_chars,
+                window_size = self.context_window_size,
+                overlap_sentences = self.context_overlap_sentences,
             )
         else:
             raise ValueError(f"Unknown chunk_mode: {self.chunk_mode}. Supported: recursive_sections")
@@ -90,6 +128,16 @@ class RAGConfig:
     def get_chunk_strategy(self) -> ChunkStrategy:
         if isinstance(self.chunk_config, SectionRecursiveConfig):
             return SectionRecursiveStrategy(self.chunk_config)
+        elif isinstance(self.chunk_config, ParagraphConfig):
+            return ParagraphStrategy(self.chunk_config)
+        elif isinstance(self.chunk_config, FixedSizeConfig):
+            return FixedSizeStrategy(self.chunk_config)
+        elif isinstance(self.chunk_config, ContextAwareConfig):
+            return ContextAwareStrategy(self.chunk_config)
+        elif isinstance(self.chunk_config, HybridParagraphFixedConfig):
+            return HybridParagraphFixedStrategy(self.chunk_config)
+        elif isinstance(self.chunk_config, HybridParagraphContextAwareConfig):
+            return HybridParagraphContextAwareStrategy(self.chunk_config)
         raise ValueError(f"Unknown chunk config type: {self.chunk_config.__class__.__name__}")
 
     def get_artifacts_directory(self) -> os.PathLike:

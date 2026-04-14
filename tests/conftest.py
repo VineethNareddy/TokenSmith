@@ -156,6 +156,10 @@ def config(pytestconfig):
         "chunk_mode": cfg.get("chunk_mode", "sections"),
         "recursive_chunk_size": cfg.get("recursive_chunk_size", 1000),
         "recursive_overlap": cfg.get("recursive_overlap", 0),
+        "paragraph_min_chars": cfg.get("paragraph_min_chars", 50),
+        "context_window_size": cfg.get("context_window_size", 5),
+        "context_overlap_sentences": cfg.get("context_overlap_sentences", 1),
+        "hybrid_max_para_chars": cfg.get("hybrid_max_para_chars", 800),
 
         # Output
         "output_mode": pytestconfig.getoption("--output-mode") or cfg.get("output_mode", "terminal"),
