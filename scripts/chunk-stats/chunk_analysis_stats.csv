@@ -1,0 +1,7 @@
+strategy,total_chunks,avg_chars,avg_words,max_chars,min_chars,std_dev_chars
+recursive_sections,1742,1520.27,260.43,2000,18,558.21
+paragraph,774,3276.18,559.79,18600,60,2566.89
+fixed_size,1737,1570.55,268.79,2000,60,587.26
+context_aware,4990,617.72,105.74,2361,27,211.62
+hybrid_paragraph_fixed,1737,1570.55,268.79,2000,60,587.26
+hybrid_paragraph_context_aware,4968,619.99,106.12,2361,27,210.36

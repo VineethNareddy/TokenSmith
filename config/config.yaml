@@ -19,6 +19,6 @@ enable_history: true
 max_history_turns: 3
 enable_topic_extraction: true
 paragraph_min_chars: 50
-context_window_size: 5
+context_window_size: 10
 context_overlap_sentences: 1
 hybrid_max_para_chars: 800

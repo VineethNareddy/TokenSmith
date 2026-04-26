@@ -40,6 +40,8 @@ def main():
         
         all_chunks = []
         for c in sections:
+            if c["heading"] == "Introduction":
+                continue
             sub_chunks = chunker.chunk(c['content'])
             all_chunks.extend(sub_chunks)
 

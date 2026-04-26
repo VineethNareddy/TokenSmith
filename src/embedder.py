@@ -52,7 +52,7 @@ def _encode_batch_worker(texts: List[str]) -> List[List[float]]:
     return embeddings
 
 class SentenceTransformer:
-    def __init__(self, model_path: str, n_ctx: int = 4096, n_threads: int = None):
+    def __init__(self, model_path: str, n_ctx: int = 8192, n_threads: int = None):
         """
         Initialize with a local GGUF model file path.
         
@@ -87,7 +87,7 @@ class SentenceTransformer:
 
     def encode(self, 
            texts: Union[str, List[str]], 
-           batch_size: int = 16,  # Adjusted for 4B model
+           batch_size: int = 4,  # Reduced to avoid seq_id overflow with long chunks
            normalize: bool = False,
            show_progress_bar: bool = False,
            **kwargs) -> np.ndarray:
@@ -109,29 +109,14 @@ class SentenceTransformer:
         if not texts:
             return np.array([], dtype=np.float32).reshape(0, -1)
         
-        # Process in batches
         embeddings = []
-        num_batches = (len(texts) + batch_size - 1) // batch_size
 
-        for i in tqdm(range(num_batches), desc="Encoding", disable=not show_progress_bar):
-            start_idx = i * batch_size
-            end_idx = min((i + 1) * batch_size, len(texts))
-            batch_texts = texts[start_idx:end_idx]
-            
+        for text in tqdm(texts, desc="Encoding", disable=not show_progress_bar):
             try:
-                # IMPORTANT CHANGE: Pass the entire LIST to the model at once.
-                # This triggers the native C++/Metal batch processing logic.
-                response = self.model.create_embedding(batch_texts)
-                
-                # Extract the list of embedding vectors from the response
-                batch_embeddings = [item['embedding'] for item in response['data']]
-                embeddings.extend(batch_embeddings)
-                
+                response = self.model.create_embedding(text)
+                embeddings.append(response['data'][0]['embedding'])
             except Exception as e:
-                print(f"Error encoding batch: {e}")
-                # Fallback: encode one by one if batch fails, or append zeros
-                for _ in batch_texts:
-                    embeddings.append([0.0] * self.embedding_dimension)
+                embeddings.append([0.0] * self.embedding_dimension)
                 
         vecs = np.array(embeddings, dtype=np.float32)
         
