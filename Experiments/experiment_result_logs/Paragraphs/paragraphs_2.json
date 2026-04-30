@@ -1,0 +1,168 @@
+{
+    "timestamp": "2026-04-25T18:50:58.123544",
+    "query": "Explain the growing and shrinking phrase in 2 phase locking?",
+    "chat_request_params": {
+        "system_prompt": "baseline",
+        "max_tokens": 400
+    },
+    "config_state": {
+        "chunk_mode": "paragraph",
+        "chunk_size": 2000,
+        "chunk_overlap": 200,
+        "paragraph_min_chars": 50,
+        "context_window_size": 10,
+        "context_overlap_sentences": 1,
+        "hybrid_max_para_chars": 800,
+        "top_k": 10,
+        "num_candidates": 50,
+        "embed_model": "models/Qwen3-Embedding-4B-Q5_K_M.gguf",
+        "ensemble_method": "rrf",
+        "rrf_k": 60,
+        "ranker_weights": {
+            "faiss": 1,
+            "bm25": 0,
+            "index_keywords": 0
+        },
+        "rerank_mode": "cross_encoder",
+        "rerank_top_k": 5,
+        "max_gen_tokens": 400,
+        "gen_model": "models/qwen2.5-3b-instruct-q8_0.gguf",
+        "system_prompt_mode": "baseline",
+        "disable_chunks": false,
+        "use_golden_chunks": false,
+        "output_mode": "terminal",
+        "metrics": [
+            "all"
+        ],
+        "use_hyde": false,
+        "hyde_max_tokens": 300,
+        "use_double_prompt": false,
+        "enable_history": true,
+        "max_history_turns": 3,
+        "use_indexed_chunks": false,
+        "extracted_index_path": "data/extracted_index.json",
+        "page_to_chunk_map_path": "index/sections/textbook_index_page_to_chunk_map.json",
+        "enable_topic_extraction": true
+    },
+    "top_k": 10,
+    "retrieved_chunks": [
+        {
+            "rank": 1,
+            "idx": 492,
+            "chunk": "Instead of locking the entire database, a transaction could instead lock only those data items that it accesses. Under such a policy, the transaction must hold locks long enough to ensure serializability, but for a period short enough not to harm performance excessively. Complicating matters are SQL statements where the data items accessed depend on a where clause, which we discuss in Section 17.10. In Chapter 18, we present the two-phase locking protocol, a simple, widely used technique that ensures serializability. Stated simply, two-phase locking requires a transaction to have two phases, one where it acquires locks but does not release any, and a second phase where the transaction releases locks but does not acquire any. (In practice, locks are usually released only when the transaction completes its execution and has been either committed or aborted.)   seat they selected; however, the situation could be easily resolved by asking the traveler to perform the selection again, with updated seat availability information. It is possible to enforce serializability by allowing only one traveler to do seat selection for a particular flight at a time. However, doing so could cause significant delays as travelers would have to wait for their flight to become available for seat selection; in particular a traveler who takes a long time to make a choice could cause serious problems for other travelers. Instead, any such transaction is typically broken up into a part that requires user interaction and a part that runs exclusively on the database. In the example above, the database transaction would check if the seats chosen by the user are still available, and if so update the seat selection in the database. Serializability is ensured only for the transactions that run on the database, without user interaction. Page 825 Further improvements to locking result if we have two kinds of locks: shared and exclusive. Shared locks are used for data that the transaction reads and exclusive locks are used for those it writes. Many transactions can hold shared locks on the same data item at the same time, but a transaction is allowed an exclusive lock on a data item only if no other transaction holds any lock (regardless of whether shared or exclusive) on the data item. This use of two modes of locks along with two-phase locking allows concurrent reading of data while still ensuring serializability.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.01639344262295082,
+            "page_number": [
+                1267,
+                1269
+            ]
+        },
+        {
+            "rank": 2,
+            "idx": 502,
+            "chunk": "A system is in a deadlock state if there exists a set of transactions such that every transaction in the set is waiting for another transaction in the set. More precisely, there exists a set of waiting transactions { T 0 , T 1 ,..., T n } such that T 0 is waiting for a data item that T 1 holds, and T 1 is waiting for a data item that T 2 holds, and ..., and T n-1 is waiting for a data item that T n holds, and T n is waiting for a data item that T 0 holds. None of the transactions can make progress in such a situation. The only remedy to this undesirable situation is for the system to invoke some drastic action, such as rolling back some of the transactions involved in the deadlock. Rollback of a transaction may be partial: That is, a transaction may be rolled back to the point where it obtained a lock whose release resolves the deadlock. There are two principal methods for dealing with the deadlock problem. We can use a deadlock prevention protocol to ensure that the system will never enter a deadlock state. Alternatively, we can allow the system to enter a deadlock state, and then try to recover by using a deadlock detection and deadlock recovery scheme. As we shall see, both methods may result in transaction rollback. Prevention is commonly used if the probability that the system would enter a deadlock state is relatively high; otherwise, detection and recovery are more efficient. Note that a detection and recovery scheme requires overhead that includes not only the run-time cost of maintaining the necessary information and of executing the detection algorithm, but also the potential losses inherent in  recovery from a deadlock.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.016129032258064516,
+            "page_number": [
+                1306,
+                1307
+            ]
+        },
+        {
+            "rank": 3,
+            "idx": 510,
+            "chunk": "We have already seen that an insert ( Q ) operation conflicts with a delete ( Q ) operation. Similarly, insert ( Q ) conflicts with a read ( Q ) operation or a write ( Q ) operation; no read or write can be performed on a data item before it exists. Since an insert ( Q ) assigns a value to data item Q , an insert is treated similarly to a write for concurrency-control purposes: - Under the two-phase locking protocol, if T i performs an insert ( Q ) operation, T i is given an exclusive lock on the newly created data item Q . - Under the timestamp-ordering protocol, if T i performs an insert ( Q ) operation, the values R-timestamp( Q ) and Wtimestamp( Q ) are set to TS( ). - T i",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015873015873015872,
+            "page_number": [
+                1322
+            ]
+        },
+        {
+            "rank": 4,
+            "idx": 660,
+            "chunk": "Page 1117 The principal idea behind the timestamp-based concurrency control protocols in Section 18.5 is that each transaction is given a unique timestamp that the system uses in deciding the serialization order. Our first task, then, in generalizing the centralized scheme to a distributed scheme is to develop a scheme for generating unique timestamps. We then discuss how the timestamp-based protocols can be used in a distributed setting.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015625,
+            "page_number": [
+                1737
+            ]
+        },
+        {
+            "rank": 5,
+            "idx": 498,
+            "chunk": "Page 841 When a transaction requests a lock on a data item in a particular mode, and no other transaction has a lock on the same data item in a conflicting mode, the lock can be granted. However, care must be taken to avoid the following scenario. Suppose a transaction T 2 has a shared-mode lock on a data item, and another transaction T 1 requests an exclusive-mode lock on the data item. T 1 has to wait for T 2 to release the sharedmode lock. Meanwhile, a transaction T 3 may request a shared-mode lock on the same data item. The lock request is compatible with the lock granted to T 2 , so T 3 may be granted the shared-mode lock. At this point T 2 may release the lock, but still T 1 has to wait for T 3 to finish. But again, there may be a new transaction T 4 that requests a shared-mode lock on the same data item, and is granted the lock before T 3 releases it. In fact, it is possible that there is a sequence of transactions that each requests a sharedmode lock on the data item, and each transaction releases the lock a short while after it is granted, but T 1 never gets the exclusive-mode lock on the data item. The transaction T 1 may never make progress, and is said to be starved . We can avoid starvation of transactions by granting locks in the following manner: When a transaction T i requests a lock on a data item Q in a particular mode M, the concurrency-control manager grants the lock provided that: - There is no other transaction holding a lock on Q in a mode that conflicts with M .  - There is no other transaction that is waiting for a lock on Q and that made its lock request before T i . Thus, a lock request will never get blocked by a lock request that is made later.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015384615384615385,
+            "page_number": [
+                1294,
+                1295
+            ]
+        },
+        {
+            "rank": 6,
+            "idx": 508,
+            "chunk": "Until now, we have restricted our attention to read and write operations. This restriction limits transactions to data items already in the database. Some transactions require not only access to existing data items, but also the ability to create new data items. Others require the ability to delete data items. T o examine how such transactions affect concurrency control, we introduce these additional operations: - delete ( Q ) deletes data item Q from the database. - insert ( Q ) inserts a new data item Q into the database and assigns Q an initial value. An attempt by a transaction T i to perform a read( Q ) operation after Q has been deleted results in a logical error in T i . Likewise, an attempt by a transaction T i to perform a read( Q ) operation before Q has been inserted results in a logical error in T i . It is also a logical error to attempt to delete a nonexistent data item.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015151515151515152,
+            "page_number": [
+                1320
+            ]
+        },
+        {
+            "rank": 7,
+            "idx": 491,
+            "chunk": "So far, we have seen what properties a schedule must have if it is to leave the database in a consistent state and allow transaction failures to be handled in a safe manner. There are various concurrency-control policies that we can use to ensure that, even when multiple transactions are executed concurrently, only acceptable schedules are generated, regardless of how the operating system timeshares resources (such as CPU time) among the transactions.  As a trivial example of a concurrency-control policy, consider this: A transaction acquires a lock on the entire database before it starts and releases the lock after it has committed. While a transaction holds a lock, no other transaction is allowed to acquire the lock, and all must therefore wait for the lock to be released. As a result of the locking policy, only one transaction can execute at a time. Therefore, only serial schedules are generated. These are trivially serializable, and it is easy to verify that they are recoverable and cascadeless as well. A concurrency-control policy such as this one leads to poor performance, since it forces transactions to wait for preceding transactions to finish before they can start. In other words, it provides a poor degree of concurrency (indeed, no concurrency at all). As we saw in Section 17.5, concurrent execution has substantial performance benefits. The goal of concurrency-control policies is to provide a high degree of concurrency, while ensuring that all schedules that can be generated are conflict or view serializable, recoverable, and cascadeless. Here we provide an overview of how some of most important concurrency-control mechanisms work, and we defer the details to Chapter 18.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014925373134328358,
+            "page_number": [
+                1266,
+                1267
+            ]
+        },
+        {
+            "rank": 8,
+            "idx": 657,
+            "chunk": "## Page 1112 A compromise between the advantages and disadvantages can be achieved through the distributed-lock-manager approach, in which the lock-manager function is distributed over several nodes. Each node maintains a local lock manager whose function is to administer the lock and unlock requests for those data items that are stored in that node. When a transaction wishes to lock a data item Q that resides at node Ni , a message is sent to the lock manager at node Ni requesting a lock (in a particular lock mode). If data item Q is locked in an incompatible mode, then the request is delayed until it can be granted. Once it has determined that the lock request can be granted, the lock manager sends a message back to the initiator indicating that it has granted the lock request. The distributed-lock-manager scheme has the advantage of simple implementation, and it reduces the degree to which the coordinator is a bottleneck. It has a reasonably low overhead, requiring two message transfers for handling lock requests, and one message transfer for handling unlock requests. However, deadlock handling is more complex, since the lock and unlock requests are no longer made at a single node: There may be internode deadlocks even when there is no deadlock within a single node. The deadlockhandling algorithms discussed in Chapter 18 must be modified, as we shall discuss in Section 23.3.2, to detect global deadlocks.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014705882352941176,
+            "page_number": [
+                1729
+            ]
+        },
+        {
+            "rank": 9,
+            "idx": 689,
+            "chunk": "Page 1151 In this section we first describe the consensus problem in a distributed system, that is, how a set of nodes agree on a decision in a fault-tolerant way. Distributed consensus is a key building block for protocols that update replicated data in a fault-tolerant manner. We outline two consensus protocols, Paxos and Raft. We then describe replicated state machines, which can be used to make services, such as data storage systems and lock managers, fault tolerant. We end the section by describing how consensus can be used to make two-phase commit nonblocking.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014492753623188406,
+            "page_number": [
+                1794
+            ]
+        },
+        {
+            "rank": 10,
+            "idx": 554,
+            "chunk": "Any index used in processing a transaction, such as a B + tree, can be treated as normal data, but to increase concurrency, we can use the B + -tree concurrency-control algorithm described in Section 18.10.2 to allow locks to be released early, in a non-two-phase manner. As a result of early lock release, it is possible that a value in a B + -tree node is updated by one transaction T 1 , which inserts an entry ( V 1, R1), and subsequently by another transaction T 2 , which inserts an entry ( V 2, R 2) in the same node, moving the entry ( V 1, R 1) even before T 1 completes execution. 4 At this point, we cannot undo transaction T 1 by replacing the contents of the node with the old value prior to T 1 performing its insert, since that would also undo the insert performed by T 2 ; transaction T 2 may still commit (or may have already committed). In this example, the only way to undo the effect of insertion of ( V 1, R 1) is to execute a corresponding delete operation. In the rest of this section, we see how to extend the recovery algorithm of Section 19.4 to support early lock release.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014285714285714285,
+            "page_number": [
+                1447
+            ]
+        }
+    ],
+    "full_response": "In the context of 2-phase locking, the \"growing and shrinking\" phrase refers to the two distinct phases of a transaction's lock acquisition process:\n\n1. **Growing Phase**: This phase is where a transaction acquires locks on the data items it needs to access. During this phase, the transaction holds locks on all the data items it requests. The goal is to ensure that the transaction has exclusive access to the necessary data items to prevent other transactions from modifying them concurrently. This phase is also known as the \"acquire\" phase.\n\n2. **Shrinking Phase**: This phase occurs after the transaction has completed its operations and is ready to commit or abort. During this phase, the transaction releases the locks it acquired during the growing phase. This phase is also known as the \"release\" phase.\n\nThe key aspect of 2-phase locking is that the transaction holds locks for a short period during the growing phase and then releases them immediately during the shrinking phase. This approach helps in maintaining performance by minimizing the duration that locks are held, but it must be done carefully to ensure that the transactions can still be serialized and maintain their serializability.\n\nThe shrinking phase is crucial because it ensures that other transactions can acquire locks and access the data items as soon as the transaction that requested the locks has completed. This helps in maintaining concurrency and prevents transactions from being starved, which can happen if locks are held for too long.\n\nIn summary, the \"growing\" phase is about acquiring locks, and the \"shrinking\" phase is about releasing those locks. This two-phase process is designed to balance between maintaining the necessary isolation and ensuring efficient use of resources.",
+    "is_contextualizing_query": true,
+    "contextualized_query": "Explain the growing and shrinking phrase in 2 phase locking?",
+    "original_query": "Explain the growing and shrinking phrase in 2 phase locking?",
+    "chat_history": [
+        {
+            "role": "user",
+            "content": "What is the difference between a shared lock and an exclusive lock?"
+        },
+        {
+            "role": "assistant",
+            "content": "The difference between a shared lock and an exclusive lock lies in their usage and the type of access they allow to a data item:\n\n- **Shared Lock**: This lock is used for data that the transaction reads. Multiple transactions can hold shared locks on the same data item at the same time. It allows concurrent reading of data.\n\n- **Exclusive Lock**: This lock is used for data that the transaction writes. Only one transaction can hold an exclusive lock on a data item at a time. Once an exclusive lock is granted, no other transaction can modify the data item until the lock is released.\n\nAdditionally, the text mentions that under two-phase locking, an insert operation is treated similarly to a write operation, meaning it also requires an exclusive lock on the newly created data item."
+        }
+    ]
+}

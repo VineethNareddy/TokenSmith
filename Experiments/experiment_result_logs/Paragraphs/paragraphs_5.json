@@ -1,0 +1,187 @@
+{
+    "timestamp": "2026-04-25T18:56:41.071876",
+    "query": "What are the main components to recovery and why are they needed in the context of 2-phase locking?",
+    "chat_request_params": {
+        "system_prompt": "baseline",
+        "max_tokens": 400
+    },
+    "config_state": {
+        "chunk_mode": "paragraph",
+        "chunk_size": 2000,
+        "chunk_overlap": 200,
+        "paragraph_min_chars": 50,
+        "context_window_size": 10,
+        "context_overlap_sentences": 1,
+        "hybrid_max_para_chars": 800,
+        "top_k": 10,
+        "num_candidates": 50,
+        "embed_model": "models/Qwen3-Embedding-4B-Q5_K_M.gguf",
+        "ensemble_method": "rrf",
+        "rrf_k": 60,
+        "ranker_weights": {
+            "faiss": 1,
+            "bm25": 0,
+            "index_keywords": 0
+        },
+        "rerank_mode": "cross_encoder",
+        "rerank_top_k": 5,
+        "max_gen_tokens": 400,
+        "gen_model": "models/qwen2.5-3b-instruct-q8_0.gguf",
+        "system_prompt_mode": "baseline",
+        "disable_chunks": false,
+        "use_golden_chunks": false,
+        "output_mode": "terminal",
+        "metrics": [
+            "all"
+        ],
+        "use_hyde": false,
+        "hyde_max_tokens": 300,
+        "use_double_prompt": false,
+        "enable_history": true,
+        "max_history_turns": 3,
+        "use_indexed_chunks": false,
+        "extracted_index_path": "data/extracted_index.json",
+        "page_to_chunk_map_path": "index/sections/textbook_index_page_to_chunk_map.json",
+        "enable_topic_extraction": true
+    },
+    "top_k": 10,
+    "retrieved_chunks": [
+        {
+            "rank": 1,
+            "idx": 492,
+            "chunk": "Instead of locking the entire database, a transaction could instead lock only those data items that it accesses. Under such a policy, the transaction must hold locks long enough to ensure serializability, but for a period short enough not to harm performance excessively. Complicating matters are SQL statements where the data items accessed depend on a where clause, which we discuss in Section 17.10. In Chapter 18, we present the two-phase locking protocol, a simple, widely used technique that ensures serializability. Stated simply, two-phase locking requires a transaction to have two phases, one where it acquires locks but does not release any, and a second phase where the transaction releases locks but does not acquire any. (In practice, locks are usually released only when the transaction completes its execution and has been either committed or aborted.)   seat they selected; however, the situation could be easily resolved by asking the traveler to perform the selection again, with updated seat availability information. It is possible to enforce serializability by allowing only one traveler to do seat selection for a particular flight at a time. However, doing so could cause significant delays as travelers would have to wait for their flight to become available for seat selection; in particular a traveler who takes a long time to make a choice could cause serious problems for other travelers. Instead, any such transaction is typically broken up into a part that requires user interaction and a part that runs exclusively on the database. In the example above, the database transaction would check if the seats chosen by the user are still available, and if so update the seat selection in the database. Serializability is ensured only for the transactions that run on the database, without user interaction. Page 825 Further improvements to locking result if we have two kinds of locks: shared and exclusive. Shared locks are used for data that the transaction reads and exclusive locks are used for those it writes. Many transactions can hold shared locks on the same data item at the same time, but a transaction is allowed an exclusive lock on a data item only if no other transaction holds any lock (regardless of whether shared or exclusive) on the data item. This use of two modes of locks along with two-phase locking allows concurrent reading of data while still ensuring serializability.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.01639344262295082,
+            "page_number": [
+                1267,
+                1269
+            ]
+        },
+        {
+            "rank": 2,
+            "idx": 543,
+            "chunk": "Until now, in discussing recovery, we have identified transactions that need to be redone and those that need to be undone, but we have not given a precise algorithm for performing these actions. We are now ready to present the full recovery algorithm using log records for recovery from transaction failure and a combination of the most recent checkpoint and log records to recover from a system crash.  The recovery algorithm described in this section requires that a data item that has been updated by an uncommitted transaction cannot be modified by any other transaction, until the first transaction has either committed or aborted. Recall that this restriction was discussed in Section 19.3.3.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.016129032258064516,
+            "page_number": [
+                1425,
+                1426
+            ]
+        },
+        {
+            "rank": 3,
+            "idx": 502,
+            "chunk": "A system is in a deadlock state if there exists a set of transactions such that every transaction in the set is waiting for another transaction in the set. More precisely, there exists a set of waiting transactions { T 0 , T 1 ,..., T n } such that T 0 is waiting for a data item that T 1 holds, and T 1 is waiting for a data item that T 2 holds, and ..., and T n-1 is waiting for a data item that T n holds, and T n is waiting for a data item that T 0 holds. None of the transactions can make progress in such a situation. The only remedy to this undesirable situation is for the system to invoke some drastic action, such as rolling back some of the transactions involved in the deadlock. Rollback of a transaction may be partial: That is, a transaction may be rolled back to the point where it obtained a lock whose release resolves the deadlock. There are two principal methods for dealing with the deadlock problem. We can use a deadlock prevention protocol to ensure that the system will never enter a deadlock state. Alternatively, we can allow the system to enter a deadlock state, and then try to recover by using a deadlock detection and deadlock recovery scheme. As we shall see, both methods may result in transaction rollback. Prevention is commonly used if the probability that the system would enter a deadlock state is relatively high; otherwise, detection and recovery are more efficient. Note that a detection and recovery scheme requires overhead that includes not only the run-time cost of maintaining the necessary information and of executing the detection algorithm, but also the potential losses inherent in  recovery from a deadlock.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015873015873015872,
+            "page_number": [
+                1306,
+                1307
+            ]
+        },
+        {
+            "rank": 4,
+            "idx": 504,
+            "chunk": "If a system does not employ some protocol that ensures deadlock freedom, then a detection and recovery scheme must be used. An algorithm that examines the state of the system is invoked periodically to determine whether a deadlock has occurred. If one has, then the system must attempt to recover from the deadlock. To do so, the system must: - Maintain information about the current allocation of data items to transactions, as well as any outstanding data item requests. - Provide an algorithm that uses this information to determine whether the system has entered a deadlock state. - Recover from the deadlock when the detection algorithm determines that a deadlock exists.  In this section, we elaborate on these issues.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015625,
+            "page_number": [
+                1310,
+                1311
+            ]
+        },
+        {
+            "rank": 5,
+            "idx": 559,
+            "chunk": "The state of the art in recovery methods is best illustrated by the ARIES recovery method. The recovery technique that we described in Section 19.4, along with the logical undo logging techniques described in Section 19.8, are modeled after ARIES, but they have been simplified significantly to bring out key concepts and make them easier to understand. In contrast, ARIES uses a number of techniques to reduce the time taken for recovery and to reduce the overhead of checkpointing. In particular, ARIES is able to avoid redoing many logged operations that have already been applied and to reduce the amount of information logged. The price paid is greater complexity; the benefits are worth the price. The four major differences between ARIES and the recovery algorithm presented earlier are that ARIES: 1. Uses a log sequence number ( LSN ) to identify log records and stores LSNs in database pages to identify which operations have been applied to a database page. 2. Supports physiological redo operations, which are physical in that the affected page is physically identified but can be logical within the page. For instance, the deletion of a record from a page may result in many other records in the page being shifted, if a slotted page structure (Section 13.2.2) is used. With physical redo logging, all bytes of the page affected by the shifting of records must be logged. With physiological logging, the deletion operation can be logged, resulting in a much smaller log record. Redo of  - the deletion operation would delete the record and shift other records as required. 3. Uses a dirty page table to minimize unnecessary redos during recovery. As mentioned earlier, dirty pages are those that have been updated in memory, and the disk version is not up-to-date. 4. Uses a fuzzy-checkpointing scheme that records only information about dirty pages and associated information and does not even require writing of dirty pages to disk. It flushes dirty pages in the background, continuously, instead of writing them during checkpoints. Page 942 In the rest of this section, we provide an overview of ARIES. The bibliographical notes list some references that provide a complete description of ARIES.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015384615384615385,
+            "page_number": [
+                1457,
+                1458
+            ]
+        },
+        {
+            "rank": 6,
+            "idx": 558,
+            "chunk": "Page 941 As mentioned earlier, it is important that the lower-level locks acquired during an operation are sufficient to perform a subsequent logical undo of the operation; otherwise concurrent operations that execute during normal processing may cause problems in the undo phase. For example, suppose the logical undo of operation O 1 of transaction T 1 can conflict at the data item level with a concurrent operation O 2 of transaction T 2 , and O 1 completes while O 2 does not. Assume also that neither transaction had committed when the system crashed. The physical update log records of O 2 may appear before and after the operation-end record for O 1 , and during recovery updates done during the logical undo of O 1 may get fully or partially overwritten by old values during the physical undo of O 2 . This problem cannot occur if O 1 had obtained all the lowerlevel locks required for the logical undo of O 1 , since then there cannot be such a concurrent O 2. If both the original operation and its logical undo operation access a single page (such operations are called physiological operations and are discussed in Section 19.9), the locking requirement above is met easily. Otherwise the details of the specific operation need to be considered when deciding on what lower-level locks need to be obtained. For example, update operations on a B + -tree could obtain a short-term lock on the root, to ensure that operations execute serially. See the bibliographical notes for references on B + -tree concurrency control and recovery exploiting logical undo logging. See the bibliographical notes also for references to an alternative approach, called multilevel recovery, which relaxes this locking requirement.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015151515151515152,
+            "page_number": [
+                1456
+            ]
+        },
+        {
+            "rank": 7,
+            "idx": 554,
+            "chunk": "Any index used in processing a transaction, such as a B + tree, can be treated as normal data, but to increase concurrency, we can use the B + -tree concurrency-control algorithm described in Section 18.10.2 to allow locks to be released early, in a non-two-phase manner. As a result of early lock release, it is possible that a value in a B + -tree node is updated by one transaction T 1 , which inserts an entry ( V 1, R1), and subsequently by another transaction T 2 , which inserts an entry ( V 2, R 2) in the same node, moving the entry ( V 1, R 1) even before T 1 completes execution. 4 At this point, we cannot undo transaction T 1 by replacing the contents of the node with the old value prior to T 1 performing its insert, since that would also undo the insert performed by T 2 ; transaction T 2 may still commit (or may have already committed). In this example, the only way to undo the effect of insertion of ( V 1, R 1) is to execute a corresponding delete operation. In the rest of this section, we see how to extend the recovery algorithm of Section 19.4 to support early lock release.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014925373134328358,
+            "page_number": [
+                1447
+            ]
+        },
+        {
+            "rank": 8,
+            "idx": 506,
+            "chunk": "When a detection algorithm determines that a deadlock exists, the system must recover from the deadlock. The most common solution is to roll back one or more transactions to break the deadlock. Three actions need to be taken: 1. Selection of a victim . Given a set of deadlocked transactions, we must determine which transaction (or transactions) to roll back to break the deadlock. We should roll back those transactions that will incur the minimum cost. Unfortunately, the term minimum cost is not a precise one. Many factors may determine the cost of a rollback, including: - a. How long the transaction has computed, and how much longer the transaction will compute before it completes its designated task. - b. How many data items the transaction has used. - c. How many more data items the transaction needs for it to complete. - d. How many transactions will be involved in the rollback. 2. Rollback . Once we have decided that a particular transaction must be rolled back, we must determine  how far this transaction should be rolled back. - The simplest solution is a total rollback : Abort the transaction and then restart it. However, it is more effective to roll back the transaction only as far as necessary to break the deadlock. Such partial rollback requires the system to maintain additional information about the state of all the running transactions. Specifically, the sequence of lock requests/grants and updates performed by the transaction needs to be recorded. The deadlock detection mechanism should decide which locks the selected transaction needs to release in order to break the deadlock. The selected transaction must be rolled back to the point where it obtained the first of these locks, undoing all actions it took after that point. The recovery mechanism must be capable of performing such partial rollbacks. Furthermore, the transactions must be capable of resuming execution after a partial rollback. See the online bibliographical notes for relevant references. 3. Starvation . In a system where the selection of victims is based primarily on cost factors, it may happen that the same transaction is always picked as a victim. As a result, this transaction never completes its designated task, thus there is starvation . We must ensure that a transaction can be picked as a victim only a (small) finite number of times. The most common solution is to include the number of rollbacks in the cost factor.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014705882352941176,
+            "page_number": [
+                1313,
+                1314
+            ]
+        },
+        {
+            "rank": 9,
+            "idx": 491,
+            "chunk": "So far, we have seen what properties a schedule must have if it is to leave the database in a consistent state and allow transaction failures to be handled in a safe manner. There are various concurrency-control policies that we can use to ensure that, even when multiple transactions are executed concurrently, only acceptable schedules are generated, regardless of how the operating system timeshares resources (such as CPU time) among the transactions.  As a trivial example of a concurrency-control policy, consider this: A transaction acquires a lock on the entire database before it starts and releases the lock after it has committed. While a transaction holds a lock, no other transaction is allowed to acquire the lock, and all must therefore wait for the lock to be released. As a result of the locking policy, only one transaction can execute at a time. Therefore, only serial schedules are generated. These are trivially serializable, and it is easy to verify that they are recoverable and cascadeless as well. A concurrency-control policy such as this one leads to poor performance, since it forces transactions to wait for preceding transactions to finish before they can start. In other words, it provides a poor degree of concurrency (indeed, no concurrency at all). As we saw in Section 17.5, concurrent execution has substantial performance benefits. The goal of concurrency-control policies is to provide a high degree of concurrency, while ensuring that all schedules that can be generated are conflict or view serializable, recoverable, and cascadeless. Here we provide an overview of how some of most important concurrency-control mechanisms work, and we defer the details to Chapter 18.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014492753623188406,
+            "page_number": [
+                1266,
+                1267
+            ]
+        },
+        {
+            "rank": 10,
+            "idx": 489,
+            "chunk": "Even if a schedule is recoverable, to recover correctly from the failure of a transaction T i , we may have to roll back several transactions. Such situations occur if transactions have read data written by T i . As an illustration, consider the partial schedule of Figure 17.15. Transaction T 8 writes a value of A that is read by transaction T 9 . T ransaction T 9 writes a value of A that is read by transaction T 10 . Suppose that, at this point, T 8 fails. T 8 must be rolled back. Since T 9 is dependent on T 8 , T 9 must be rolled back. Since T 10 is dependent on T 9 , T 10 must be rolled back. This phenomenon, in which a single transaction failure leads to a series of transaction rollbacks, is called cascading rollback . Figure 17.15 Schedule 10. Page 821 Cascading rollback is undesirable, since it leads to the undoing of a significant amount of work. It is desirable to restrict the schedules to those where cascading rollbacks cannot occur. Such schedules are called cascadeless schedules. Formally, a cascadeless schedule is one where, for each pair of transactions T i and T j such that T j reads a data item previously written by T i , the commit operation of T i appears before the read operation of T j . It is easy to verify that every cascadeless schedule is also recoverable.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014285714285714285,
+            "page_number": [
+                1262
+            ]
+        }
+    ],
+    "full_response": "In the context of 2-phase locking, the main components needed for recovery are:\n\n1. **Two-Phase Locking Protocol**: This protocol ensures that transactions are executed in a serializable manner. It involves two phases:\n   - **Phase 1 (Locking Phase)**: The transaction acquires locks on all the data items it needs to access.\n   - **Phase 2 (Release Phase)**: The transaction releases all locks it has acquired.\n\n2. **Locking Requirements**: To ensure serializability, transactions need to acquire locks on the data items they access. For example:\n   - **Shared Locks**: Used for data that the transaction reads.\n   - **Exclusive Locks**: Used for data that the transaction writes.\n\n3. **Concurrency Control Mechanisms**: To allow multiple transactions to run concurrently while maintaining serializability, mechanisms like B+ tree concurrency control are used. This allows locks to be released early, in a non-two-phase manner, but requires careful management to avoid conflicts.\n\n4. **Recovery Algorithm**: This is used to handle system crashes and recover from deadlocks. The recovery algorithm needs to:\n   - Record the state of all running transactions, including lock requests and updates.\n   - Determine which transactions need to be rolled back to break deadlocks.\n   - Ensure that transactions can resume execution after partial rollbacks.\n\nThese components are needed because:\n\n- **Concurrency**: Multiple transactions need to be able to run concurrently to improve performance.\n- **Serializability**: To ensure that the database remains consistent after transaction failures.\n- **Deadlock Handling**: To prevent transactions from getting stuck in a deadlock situation.\n- **Recovery**: To restore the database to a consistent state after a system crash or failure.\n\nBy carefully managing these components, the system can achieve a balance between concurrency and consistency, ensuring that transactions are executed in a way that is both efficient and reliable.<<<",
+    "is_contextualizing_query": true,
+    "contextualized_query": "What are the main components to recovery and why are they needed in the context of 2-phase locking?",
+    "original_query": "What are the main components to recovery and why are they needed?",
+    "chat_history": [
+        {
+            "role": "user",
+            "content": "Explain the growing and shrinking phrase in 2 phase locking?"
+        },
+        {
+            "role": "assistant",
+            "content": "In the context of 2-phase locking, the \"growing and shrinking\" phrase refers to the two distinct phases of a transaction's lock acquisition process:\n\n1. **Growing Phase**: This phase is where a transaction acquires locks on the data items it needs to access. During this phase, the transaction holds locks on all the data items it requests. The goal is to ensure that the transaction has exclusive access to the necessary data items to prevent other transactions from modifying them concurrently. This phase is also known as the \"acquire\" phase.\n\n2. **Shrinking Phase**: This phase occurs after the transaction has completed its operations and is ready to commit or abort. During this phase, the transaction releases the locks it acquired during the growing phase. This phase is also known as the \"release\" phase.\n\nThe key aspect of 2-phase locking is that the transaction holds locks for a short period during the growing phase and then releases them immediately during the shrinking phase. This approach helps in maintaining performance by minimizing the duration that locks are held, but it must be done carefully to ensure that the transactions can still be serialized and maintain their serializability.\n\nThe shrinking phase is crucial because it ensures that other transactions can acquire locks and access the data items as soon as the transaction that requested the locks has completed. This helps in maintaining concurrency and prevents transactions from being starved, which can happen if locks are held for too long.\n\nIn summary, the \"growing\" phase is about acquiring locks, and the \"shrinking\" phase is about releasing those locks. This two-phase process is designed to balance between maintaining the necessary isolation and ensuring efficient use of resources."
+        },
+        {
+            "role": "user",
+            "content": "Compare rigorous 2 phase locking to regular 2 phase locking?"
+        },
+        {
+            "role": "assistant",
+            "content": "            The text does not provide a direct comparison between \"rigorous 2 phase locking\" and \"regular 2 phase locking.\" The information provided is about the two-phase locking protocol, which is a widely used technique for ensuring serializability in database systems. \n\nThe key points about the two-phase locking protocol are:\n\n1. It requires a transaction to go through two phases: one where it acquires locks but does not release any, and a second phase where the transaction releases locks but does not acquire any.\n2. In practice, locks are usually released only when the transaction completes its execution and has been either committed or aborted.\n\nThe text does not mention any distinction between rigorous and regular 2 phase locking. It seems that the protocol itself is described as a standard technique, and any differences would likely be discussed in more detail in Chapter 18, which is mentioned at the end of the provided excerpt.\n\nIf you have additional context or information about \"rigorous 2 phase locking,\" I would be happy to help compare it with the standard two-phase locking protocol based on that information."
+        },
+        {
+            "role": "user",
+            "content": "What is the importance of deadlock detection in 2 phase locking?"
+        },
+        {
+            "role": "assistant",
+            "content": "Deadlock detection is crucial in 2-phase locking for ensuring the system remains stable and prevents transactions from getting stuck in an infinite loop. In 2-phase locking, a transaction must acquire all necessary locks before executing and release all locks before terminating. If a transaction is unable to acquire all required locks or if it cannot release all acquired locks due to another transaction holding the required lock, a deadlock occurs.\n\nThe importance of deadlock detection in 2-phase locking is:\n\n1. **Prevention of Inconsistent States**: Deadlocks can lead to inconsistent states in the database. If a transaction is waiting indefinitely for locks that are held by other transactions, it can prevent other transactions from proceeding, leading to a situation where data is left in an inconsistent state.\n\n2. **System Stability**: Deadlock detection helps maintain the stability of the system. When a deadlock is detected, the system can take appropriate actions to resolve it, such as rolling back one or more transactions to break the deadlock, ensuring that the system remains in a consistent state.\n\n3. **Efficient Resource Management**: By detecting and resolving deadlocks, the system can manage resources more efficiently. If transactions are allowed to wait indefinitely for locks, it can lead to performance degradation and resource wastage.\n\n4. **Resource Allocation**: Deadlock detection allows the system to allocate resources more effectively. By identifying and resolving deadlocks, the system can ensure that resources are allocated in a way that prevents transactions from getting stuck in a deadlock state.\n\n5. **Performance Optimization**: Deadlock detection helps in optimizing performance. By identifying and resolving deadlocks, the system can avoid unnecessary delays and ensure that transactions proceed as intended, improving overall system performance.\n\nIn summary, deadlock detection in 2-phase locking is essential for maintaining the integrity, stability, and efficiency of the database system. It ensures that transactions can proceed in a serializable manner without getting stuck in a deadlock state, leading to a more reliable and performant system."
+        }
+    ]
+}

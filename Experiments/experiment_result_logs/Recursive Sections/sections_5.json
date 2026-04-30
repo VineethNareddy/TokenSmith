@@ -1,0 +1,188 @@
+{
+    "timestamp": "2026-04-25T18:21:26.934485",
+    "query": "What are the main components to recovery and why are they needed in the context of rigorous two-phase locking (R2PL)?",
+    "chat_request_params": {
+        "system_prompt": "baseline",
+        "max_tokens": 400
+    },
+    "config_state": {
+        "chunk_mode": "recursive_sections",
+        "chunk_size": 2000,
+        "chunk_overlap": 200,
+        "paragraph_min_chars": 50,
+        "context_window_size": 10,
+        "context_overlap_sentences": 1,
+        "hybrid_max_para_chars": 800,
+        "top_k": 10,
+        "num_candidates": 50,
+        "embed_model": "models/Qwen3-Embedding-4B-Q5_K_M.gguf",
+        "ensemble_method": "rrf",
+        "rrf_k": 60,
+        "ranker_weights": {
+            "faiss": 1,
+            "bm25": 0,
+            "index_keywords": 0
+        },
+        "rerank_mode": "cross_encoder",
+        "rerank_top_k": 5,
+        "max_gen_tokens": 400,
+        "gen_model": "models/qwen2.5-3b-instruct-q8_0.gguf",
+        "system_prompt_mode": "baseline",
+        "disable_chunks": false,
+        "use_golden_chunks": false,
+        "output_mode": "terminal",
+        "metrics": [
+            "all"
+        ],
+        "use_hyde": false,
+        "hyde_max_tokens": 300,
+        "use_double_prompt": false,
+        "enable_history": true,
+        "max_history_turns": 3,
+        "use_indexed_chunks": false,
+        "extracted_index_path": "data/extracted_index.json",
+        "page_to_chunk_map_path": "index/sections/textbook_index_page_to_chunk_map.json",
+        "enable_topic_extraction": true
+    },
+    "top_k": 10,
+    "retrieved_chunks": [
+        {
+            "rank": 1,
+            "idx": 1094,
+            "chunk": "Description: Chapter 18 Section 18.1  Lock-Based Protocols Section 18.1.3 The Two-Phase Locking Protocol Content: One protocol that ensures serializability is the two-phase locking protocol . This protocol requires that each transaction issue lock and unlock requests in two phases: 1. Growing phase . A transaction may obtain locks, but may not release any lock. 2. Shrinking phase . A transaction may release locks, but may not obtain any new locks. Initially, a transaction is in the growing phase. The transaction acquires locks as needed. Once the transaction releases a lock, it enters the shrinking phase, and it can issue no more lock requests. For example, transactions T 3 and T 4 are two phase. On the other hand, transactions T 1 and T 2 are not two phase. Note that the unlock instructions do not need to appear at the end of the transaction. For example, in the case of transaction T 3 , we could move the unlock( B ) instruction to just after the lock-X( A ) instruction and still retain the twophase locking property. We can show that the two-phase locking protocol ensures conflict serializability. Consider any transaction. The point in the schedule where the transaction has obtained its final lock (the end of its growing phase) is called the lock point of the transaction. Now, transactions can be ordered according to their lock points-this ordering is, in fact, a serializability ordering for the transactions. We leave the proof as an exercise for you to do (see Practice Exercise 18.1).  Two-phase locking does not ensure freedom from deadlock. Observe that transactions T 3 and T 4 are two phase, but, in schedule 2 (Figure 18.7), they are deadlocked. Recall from Section 17.7.2 that, in addition to being serializable, schedules should be cascadeless. Cascading rollback may occur under two-phase locking. As an illustration, consider the partial schedule of Figure 18.8. Each transaction observes the two-phase locking protocol, but the failure of T 5 after the read(A) step of T 7 leads to cascading rollback of T 6 and T 7",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.01639344262295082,
+            "page_number": [
+                1295,
+                1296
+            ]
+        },
+        {
+            "rank": 2,
+            "idx": 1183,
+            "chunk": "Description: Chapter 19 Section 19.1  Failure Classification Content: . Next, we must consider how these failure modes affect the contents of the database. We can then propose algorithms to ensure database consistency and transaction atomicity despite failures. These algorithms, known as recovery algorithms, have two parts: 1. Actions taken during normal transaction processing to ensure that enough information exists to allow recovery from failures. 2. Actions taken after a failure to recover the database contents to a state that ensures database consistency, transaction atomicity, and durability.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.016129032258064516,
+            "page_number": [
+                1404
+            ]
+        },
+        {
+            "rank": 3,
+            "idx": 1095,
+            "chunk": "Description: Chapter 18 Section 18.1  Lock-Based Protocols Section 18.1.3 The Two-Phase Locking Protocol Content: . Each transaction observes the two-phase locking protocol, but the failure of T 5 after the read(A) step of T 7 leads to cascading rollback of T 6 and T 7 . Figure 18.8 Partial schedule under two-phase locking. Cascading rollbacks can be avoided by a modification of two-phase locking called the strict two-phase locking protocol . This protocol requires not only that locking be two phase, but also that all exclusive-mode locks taken by a transaction be held until that transaction commits. This requirement ensures that any data written by an uncommitted transaction are locked in exclusive mode until the transaction commits, preventing any other transaction from reading the data.  Another variant of two-phase locking is the rigorous twophase locking protocol , which requires that all locks be held until the transaction commits. We can easily verify that, with rigorous two-phase locking, transactions can be serialized in the order in which they commit. Consider the following two transactions, for which we have shown only some of the significant read and write operations: T 8 : read( a 1 ); read( a 2 ); ... read(a n ); write( a 1 ). T 9 : read( a 1 ); read( a 2 ); display( a 1 + a 2 ). Page 843 If we employ the two-phase locking protocol, then T 8 must lock a 1 in exclusive mode. Therefore, any concurrent execution of both transactions amounts to a serial execution. Notice, however, that T 8 needs an exclusive lock on a 1 only at the end of its execution, when it writes a 1 . Thus, if T 8 could initially lock a 1 in shared mode, and then could later change the lock to exclusive mode, we could get more concurrency, since T 8 and T 9 could access a 1 and a 2 simultaneously. This observation leads us to a refinement of the basic twophase locking protocol, in which lock conversions are allowed. We shall provide a mechanism for upgrading a shared lock to an exclusive lock, and downgrading an exclusive lock to a shared lock",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015873015873015872,
+            "page_number": [
+                1296,
+                1297
+            ]
+        },
+        {
+            "rank": 4,
+            "idx": 1456,
+            "chunk": "Description: Chapter 23 Section 23.2  Commit Protocols Section 23.2.1 Two-Phase Commit Content: We first describe how the two-phase commit protocol (2PC) operates during normal operation, then describe how it handles failures and finally how it carries out recovery and concurrency control. Consider a transaction T initiated at node Ni , where the transaction coordinator is Ci , .",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015625,
+            "page_number": [
+                1711
+            ]
+        },
+        {
+            "rank": 5,
+            "idx": 1463,
+            "chunk": "Description: Chapter 23 Section 23.2  Commit Protocols Section 23.2.1 Two-Phase Commit Section 23.2.1.3 Recovery and Concurrency Control Content: When a failed node restarts, we can perform recovery by using, for example, the recovery algorithm described in Section 19.4. T o deal with distributed commit protocols, the recovery procedure must treat in-doubt transactions specially; in-doubt transactions are transactions for which a &lt; ready T&gt; log record is found, but neither a &lt; commit T&gt; log record nor an &lt; abort T&gt; log record is found. The recovering node must determine the commit-abort status of such transactions by contacting other nodes, as described in Section 23.2.1.2. If recovery is done as just described, however, normal transaction processing at the node cannot begin until all indoubt transactions have been committed or rolled back. Finding the status of in-doubt transactions can be slow, since multiple nodes may have to be contacted. Further, if the coordinator has failed, and no other node has information about the commit-abort status of an incomplete transaction, recovery potentially could become blocked if 2PC is used. As a result, the node performing restart recovery may remain unusable for a long period. To circumvent this problem, recovery algorithms typically provide support for noting lock information in the log. (We are assuming here that locking is used for concurrency control.) Instead of writing a &lt; ready T&gt; log record, the algorithm writes a &lt; ready T , L &gt; log record, where L is a list of all write locks held by the transaction T when the log record is written. At recovery time, after performing local recovery actions, for every in-doubt transaction T , all the write locks noted in the &lt; ready T , L &gt; log record (read from the log) are reacquired. After lock reacquisition is complete for all in-doubt transactions, transaction processing can start at the node, even before the commit-abort status of the in-doubt transactions is determined",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015384615384615385,
+            "page_number": [
+                1718
+            ]
+        },
+        {
+            "rank": 6,
+            "idx": 1201,
+            "chunk": "Description: Chapter 19 Section 19.3  Recovery and Atomicity Section 19.3.5 Using the Log to Redo and Undo Transactions Content: We now provide an overview of how the log can be used to recover from a system crash and to roll back transactions during normal operation. However, we postpone details of the procedures for failure recovery and rollback to Section 19.4. Consider our simplified banking system. Let T 0 be a transaction that transfers $50 from account A to account B : Let T 1 be a transaction that withdraws $100 from account C: The portion of the log containing the relevant information concerning these two transactions appears in Figure 19.2. Figure 19.2 Portion of the system log corresponding to T 0 and T 1 . Figure 19.3 shows one possible order in which the actual outputs took place in both the database system and the log  Page 918 as a result of the execution of T 0 and T 1 . 2 Figure 19.3 State of system log and database corresponding to T 0 and T 1 . Using the log, the system can handle any failure that does not result in the loss of information in non-volatile storage. The recovery scheme uses two recovery procedures. Both these procedures make use of the log to find the set of data items updated by each transaction T i and their respective old and new values. - redo ( T i ). The procedure sets the value of all data items updated by transaction T i to the new values. The order in which updates are carried out by redo is important; when recovering from a system crash, if updates to a particular data item are applied in an order different from the order in which they were applied originally, the final state of that data item will have a wrong value. Most recovery algorithms, including the one we describe in Section 19.4, do not perform redo of each transaction separately; instead they perform a single scan of the log, during which redo actions are performed for each log record as it is encountered. This approach ensures the order of updates is preserved, and it is more efficient since the log needs to be read only once overall, instead of once per transaction",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015151515151515152,
+            "page_number": [
+                1418,
+                1419
+            ]
+        },
+        {
+            "rank": 7,
+            "idx": 1306,
+            "chunk": "Description: Chapter 20 Section 20.6  Transaction Processing in Parallel and Distributed Systems Content: Atomicity of transactions is an important issue in building a parallel and distributed database system. If a transaction runs across two nodes, unless the system designers are  Page 990 careful, it may commit at one node and abort at another, leading to an inconsistent state. Transaction commit protocols ensure such a situation cannot arise. The twophase commit protocol (2PC) is the most widely used of these protocols. The 2PC protocol is described in detail in Section 23.2.1, but the key ideas are as follows: The basic idea behind 2PC is for each node to execute the transaction until it enters the partially committed state, and then leave the commit decision to a single coordinator node; the transaction is said to be in the ready state at a node at this point. The coordinator decides to commit the transaction only if the transaction reaches the ready state at every node where it executed; otherwise (e.g., if the transaction aborts at any node), the coordinator decides to abort the transaction. Every node where the transaction executed must follow the decision of the coordinator. If a node fails when a transaction is in ready state, when the node recovers from failure it should be in a position to either commit or abort the transaction, depending on the decision of the coordinator. Concurrency control is another issue in parallel and distributed databases. Since a transaction may access data items at several nodes, transaction managers at several nodes may need to coordinate to implement concurrency control. If locking is used, locking can be performed locally at the nodes containing accessed data items, but there is also a possibility of deadlock involving transactions originating at multiple nodes. Therefore deadlock detection needs to be carried out across multiple nodes. Failures are more common in distributed systems since not only may computers fail, but communication links may also fail",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014925373134328358,
+            "page_number": [
+                1531,
+                1532
+            ]
+        },
+        {
+            "rank": 8,
+            "idx": 1101,
+            "chunk": "Description: Chapter 18 Section 18.1  Lock-Based Protocols Section 18.1.5 Graph-Based Protocols Content: . 4. A data item that has been locked and unlocked by T i cannot subsequently be relocked by T i . All schedules that are legal under the tree protocol are conflict serializable. To illustrate this protocol, consider the database graph of Figure 18.11. The following four transactions follow the tree  Page 847 protocol on this graph. We show only the lock and unlock instructions: Figure 18.11 Tree-structured database graph. T 10 : lock-X( B ); lock-X( E ); lock-X( D ); unlock( B ); unlock( E ); lock-X( G ); unlock( D ); unlock( G ). T 11 : lock-X( D ); lock-X( H ); unlock( D ); unlock( H ). T 12 : lock-X( B ); lock-X( E ); unlock( E ); unlock( B ). ). T 13 : lock-X( D ); lock-X( H ); unlock( D ); unlock( H One possible schedule in which these four transactions participated appears in Figure 18.12. Note that, during its execution, transaction T 10 holds locks on two disjoint subtrees.  Figure 18.12 Serializable schedule under the tree protocol. Observe that the schedule of Figure 18.12 is conflict serializable. It can be shown not only that the tree protocol ensures conflict serializability, but also that this protocol ensures freedom from deadlock. The tree protocol in Figure 18.12 does not ensure recoverability and cascadelessness. T o ensure recoverability and cascadelessness, the protocol can be modified to not permit release of exclusive locks until the end of the transaction. Holding exclusive locks until the end of the transaction reduces concurrency. Here is an alternative that improves concurrency, but ensures only recoverability: For each data item with an uncommitted write, we record which transaction performed the last write to the data item. Whenever a transaction T i performs a read of an uncommitted data item, we record a commit dependency of T i on the transaction that performed the last write to the data item",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014705882352941176,
+            "page_number": [
+                1303,
+                1304,
+                1305
+            ]
+        },
+        {
+            "rank": 9,
+            "idx": 1464,
+            "chunk": "Description: Chapter 23 Section 23.2  Commit Protocols Section 23.2.1 Two-Phase Commit Section 23.2.1.3 Recovery and Concurrency Control Content: . After lock reacquisition is complete for all in-doubt transactions, transaction processing can start at the node, even before the commit-abort status of the in-doubt transactions is determined. The commit or rollback of indoubt transactions proceeds concurrently with the execution of new transactions. Thus, node recovery is faster and never gets blocked. Note that new transactions that have a lock conflict with any write locks held by in-doubt transactions will be unable to make progress until the conflicting in-doubt transactions have been committed or rolled back.  ## Page 1106 23.2.2 Avoiding Blocking During Commit The blocking problem of 2PC is a serious concern for system designers, since the failure of a coordinator node could lead to blocking of a transaction that has acquired locks on a frequently used data item, which in turn prevents other transactions that need to acquire a conflicting lock from completing their execution. By involving multiple nodes in the commit decision step of 2PC, it is possible to avoid blocking as long as a majority of the nodes involved in the commit decision are alive and can communicate with each other. This is done by using the idea of fault-tolerant distributed consensus. Details of distributed consensus are discussed in detail later, in Section 23.8, but we outline the problem and sketch a solution approach below. The distributed consensus problem is as follows: A set of n nodes need to agree on a decision; in this case, whether or not to commit a particular transaction. The inputs to make the decision are provided to all the nodes, and then each node votes on the decision; in the case of 2PC, the decision is on whether or not to commit a transaction",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014492753623188406,
+            "page_number": [
+                1718,
+                1719
+            ]
+        },
+        {
+            "rank": 10,
+            "idx": 1128,
+            "chunk": "Description: Chapter 18 Section 18.5  Timestamp-Based Protocols Section 18.5.2 The Timestamp-Ordering Protocol Content: . Thus, in schedule 3 of Figure 18.17, TS( T 25 ) &lt; TS( T 26 ), and the schedule is possible under the timestamp protocol. Figure 18.17 Schedule 3. We note that the preceding execution can also be produced by the two-phase locking protocol. There are, however, schedules that are possible under the two-phase locking protocol, but are not possible under the timestamp protocol, and vice versa (see Exercise 18.27). The timestamp-ordering protocol ensures conflict serializability. This is because conflicting operations are processed in timestamp order. The protocol ensures freedom from deadlock, since no transaction ever waits. However, there is a possibility of starvation of long transactions if a sequence of conflicting short transactions causes repeated restarting of the long transaction. If a transaction is suffering from repeated restarts, conflicting transactions need to be temporarily blocked to enable the transaction to finish.  The protocol can generate schedules that are not recoverable. However, it can be extended to make the schedules recoverable, in one of several ways: - Recoverability and cascadelessness can be ensured by performing all writes together at the end of the transaction. The writes must be atomic in the following sense: While the writes are in progress, no transaction is permitted to access any of the data items that have been written. - Page 864 Recoverability and cascadelessness can also be guaranteed by using a limited form of locking, whereby reads of uncommitted items are postponed until the transaction that updated the item commits (see Exercise 18.28). - Recoverability alone can be ensured by tracking uncommitted writes and allowing a transaction T i to commit only after the commit of any transaction that wrote a value that T i read. Commit dependencies, outlined in Section 18.1.5, can be used for this purpose",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014285714285714285,
+            "page_number": [
+                1330,
+                1331
+            ]
+        }
+    ],
+    "full_response": "            In the context of rigorous two-phase locking (R2PL), recovery is needed to ensure that the system can recover from failures, particularly those that might cause transactions to be in a state where they are neither committed nor aborted. The main components to recovery in R2PL include:\n\n1. **Lock Information in the Log**: In R2PL, instead of just recording whether a transaction is ready to commit or abort, the log records also include a list of all write locks held by the transaction at the time the log record was written. This lock information is crucial because it allows the system to reacquire these locks during recovery, ensuring that the transaction can proceed without waiting for the commit or abort status of other transactions.\n\n2. **Recovery Algorithm**: The recovery algorithm must be designed to handle in-doubt transactions, which are transactions for which a `ready T` log record is found but neither a `commit T` nor an `abort T` log record is found. The algorithm needs to determine the commit or abort status of these transactions by contacting other nodes. This is necessary because the recovery process cannot proceed until all in-doubt transactions have been committed or rolled back.\n\n3. **Lock Reacquisition During Recovery**: During recovery, after performing local recovery actions, the system reacquires all write locks noted in the `ready T, L` log records (read from the log) for every in-doubt transaction. This ensures that the transaction can proceed without waiting for the commit or abort status of other transactions, which is crucial for maintaining concurrency and avoiding blocking.\n\nThese components are needed to ensure that the system can recover from failures without blocking other transactions. By tracking lock information in the log and reacquiring these locks during recovery, the system can continue processing new transactions and avoid the blocking problem associated with 2PC.\n\n<<<ANSWER>>",
+    "is_contextualizing_query": true,
+    "contextualized_query": "What are the main components to recovery and why are they needed in the context of rigorous two-phase locking (R2PL)?",
+    "original_query": "What are the main components to recovery and why are they needed?",
+    "chat_history": [
+        {
+            "role": "user",
+            "content": "Explain the growing and shrinking phrase in 2 phase locking?"
+        },
+        {
+            "role": "assistant",
+            "content": "In the Two-Phase Locking (2PL) protocol, transactions operate in two distinct phases to ensure serializability and conflict serializability of schedules:\n\n1. **Growing Phase**: This is the initial phase where a transaction can acquire locks on data items but cannot release any locks. Transactions can issue lock-X (exclusive lock) or lock-S (shared lock) instructions during this phase. The transaction acquires locks as needed to access the data it intends to modify or read.\n\n2. **Shrinking Phase**: Once a transaction has acquired all the locks it needs, it enters the shrinking phase. In this phase, the transaction can only release locks and cannot acquire any new locks. The transaction must release all the locks it has acquired during the growing phase before it can commit or abort. This ensures that all locks are held until the transaction is committed or aborted, preventing other transactions from acquiring locks on the same data items.\n\nThe key idea behind the 2PL protocol is that transactions are serialized based on the order in which they acquire locks, which is determined by their lock points (the point in the schedule where the transaction has obtained its final lock). This ordering is a serializability ordering, meaning that the transactions can be executed in a serial manner to ensure that the final schedule is conflict serializable.\n\nThe 2PL protocol ensures that schedules are conflict serializable, but it does not guarantee freedom from deadlock. It also allows for lock conversion, which can be used to improve concurrency by allowing transactions to upgrade shared locks to exclusive locks and downgrade exclusive locks to shared locks, provided these operations are performed in the appropriate phases."
+        },
+        {
+            "role": "user",
+            "content": "Compare rigorous 2 phase locking to regular 2 phase locking?"
+        },
+        {
+            "role": "assistant",
+            "content": "To compare rigorous two-phase locking (R2PL) to regular two-phase locking (2PL), let's break down the key differences:\n\n1. **Lock Holding Duration**:\n   - **Regular 2PL**: Transactions hold locks only during the growing phase (acquiring locks) and release them during the shrinking phase (releasing locks). Once a transaction commits or aborts, all locks are released.\n   - **Rigorous 2PL**: Transactions hold all locks until the transaction commits. This means that any data written by an uncommitted transaction is locked in exclusive mode until the transaction commits, preventing other transactions from reading the data.\n\n2. **Transaction Serialization**:\n   - **Regular 2PL**: Transactions can be serialized by their lock points (the point in the schedule where the transaction has obtained its final lock).\n   - **Rigorous 2PL**: Transactions can also be serialized by their lock points, but this is a stronger property. Since all locks are held until the transaction commits, the schedule is guaranteed to be cascadeless. This means that if a transaction fails (either commits or aborts), it does not affect the locks held by other transactions.\n\n3. **Concurrency**:\n   - **Regular 2PL**: Allows for more concurrency because transactions can acquire locks in shared mode and upgrade them to exclusive mode if needed.\n   - **Rigorous 2PL**: Less concurrency because all locks must be held until the transaction commits, which can limit the ability to upgrade locks.\n\n4. **Implementation**:\n   - **Regular 2PL**: More flexible in terms of lock management, allowing for shared and exclusive locks.\n   - **Rigorous 2PL**: More restrictive, only allowing exclusive locks, but ensuring that all locks are held until the transaction commits.\n\n5. **Failure Handling**:\n   - **Regular 2PL**: Can handle failures by rolling back transactions that fail, but this can lead to cascading rollbacks if"
+        },
+        {
+            "role": "user",
+            "content": "What is the importance of deadlock detection in 2 phase locking?"
+        },
+        {
+            "role": "assistant",
+            "content": "             In the context of rigorous two-phase locking (R2PL), deadlock detection is crucial because it helps prevent situations where transactions originating from multiple nodes could be involved in a deadlock. Since R2PL requires that all locks be held until the transaction commits, transactions may need to coordinate across multiple nodes to implement concurrency control. Deadlock detection across multiple nodes is necessary to ensure that if a failure occurs, the system can still decide whether to commit or abort a transaction based on the decision of the coordinator, without risking a deadlock involving transactions from different nodes. This ensures the system remains consistent and reliable in the face of failures and network disruptions. <<<ANSWER>>"
+        }
+    ]
+}

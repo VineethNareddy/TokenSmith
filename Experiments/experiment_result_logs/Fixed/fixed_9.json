@@ -1,0 +1,188 @@
+{
+    "timestamp": "2026-04-25T18:04:36.152946",
+    "query": "What does it mean for a transaction to be serializable? How about conflict-serializable? Give examples for both.",
+    "chat_request_params": {
+        "system_prompt": "baseline",
+        "max_tokens": 400
+    },
+    "config_state": {
+        "chunk_mode": "fixed_size",
+        "chunk_size": 2000,
+        "chunk_overlap": 200,
+        "paragraph_min_chars": 50,
+        "context_window_size": 10,
+        "context_overlap_sentences": 1,
+        "hybrid_max_para_chars": 800,
+        "top_k": 10,
+        "num_candidates": 50,
+        "embed_model": "models/Qwen3-Embedding-4B-Q5_K_M.gguf",
+        "ensemble_method": "rrf",
+        "rrf_k": 60,
+        "ranker_weights": {
+            "faiss": 1,
+            "bm25": 0,
+            "index_keywords": 0
+        },
+        "rerank_mode": "cross_encoder",
+        "rerank_top_k": 5,
+        "max_gen_tokens": 400,
+        "gen_model": "models/qwen2.5-3b-instruct-q8_0.gguf",
+        "system_prompt_mode": "baseline",
+        "disable_chunks": false,
+        "use_golden_chunks": false,
+        "output_mode": "terminal",
+        "metrics": [
+            "all"
+        ],
+        "use_hyde": false,
+        "hyde_max_tokens": 300,
+        "use_double_prompt": false,
+        "enable_history": true,
+        "max_history_turns": 3,
+        "use_indexed_chunks": false,
+        "extracted_index_path": "data/extracted_index.json",
+        "page_to_chunk_map_path": "index/sections/textbook_index_page_to_chunk_map.json",
+        "enable_topic_extraction": true
+    },
+    "top_k": 10,
+    "retrieved_chunks": [
+        {
+            "rank": 1,
+            "idx": 1062,
+            "chunk": "s schedule is not conflict serializable. It is possible to have two schedules that produce the same outcome but that are not conflict equivalent. For example, consider transaction T 5 , which transfers $10 from account B to account A . Let schedule 8 be as defined in Figure 17.13. We claim that schedule 8 is not conflict equivalent to the serial schedule &lt;T 1 , T 5 &gt;, since, in schedule 8, the write( B ) instruction of T 5 conflicts with the read( B ) instruction of T 1 . This creates an edge T 5 → T 1 in the precedence graph. Similarly, we see that the write( A ) instruction of T 1 conflicts with the read instruction of T 5 , creating an edge T 1 → T 5 . This shows that the precedence graph has a cycle and that schedule 8 is not serializable. However, the final values of accounts A and B after the execution of either schedule 8 or the serial schedule &lt;T 1 , T 5 &gt; are the same-$960 and $2040, respectively. Figure 17.13 Schedule 8. We can see from this example that there are less-stringent definitions of schedule equivalence than conflict equivalence. For the system to determine that schedule 8  Page 819 produces the same outcome as the serial schedule &lt;T 1 , T 5 &gt;, it must analyze the computation performed by T 1 and T 5 , rather than just the read and write operations. In general, such analysis is hard to implement and is computationally expensive. In our example, the final result is the same as that of a serial schedule because of the mathematical fact that the increment and decrement operations are commutative. While this may be easy to see in our simple example, the general case is not so easy since a transaction may be expressed as a complex SQL statement, a Java program with JDBC calls, etc. However, there are other definitions of schedule equivalence based purely on the read and write operations. One such definition is view equivalence, a definition that leads to the concept of view serializability. View serializability is n",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.01639344262295082,
+            "page_number": [
+                1259,
+                1260
+            ]
+        },
+        {
+            "rank": 2,
+            "idx": 1057,
+            "chunk": "Page 813 Before we can consider how the concurrency-control component of the database system can ensure serializability, we consider how to determine when a schedule is serializable. Certainly, serial schedules are serializable, but if steps of multiple transactions are interleaved, it is harder to determine whether a schedule is serializable. Since trans actions are programs, it is difficult to determine exactly what operations a transaction performs and how operations of various transactions interact. For this reason, we shall not consider the various types of operations that a transaction can perform on a data item, but instead consider only two operations: read and write. We assume that, between a read( Q ) instruction and a write( Q ) instruction on a data item Q, a transaction may perform an arbitrary sequence of operations on the copy of Q that is residing in the local buffer of the transaction. In this model, the only significant operations of a transaction, from a scheduling point of view, are its read and write instructions. Commit operations, though relevant, are not considered until Section 17.7. We therefore may show only read and write instructions in schedules, as we do for schedule 3 in Figure 17.6. Figure 17.6 Schedule 3-showing only the read and write instructions. In this section, we discuss different forms of schedule equivalence but focus on a particular form called conflict  ## serializability . Let us consider a schedule S in which there are two consecutive instructions, I and J , of transactions T i and T j , respectively ( i ≠ j ). If I and J refer to different data items, then we can swap I and J without affecting the results of any instruction in the schedule. However, if I and J refer to the same data item Q , then the order of the two steps may matter. Since we are dealing with only read and write instructions, there are four cases that we need to consider: - Page 814 1. I = read( Q ), J = read( Q ). Th",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.016129032258064516,
+            "page_number": [
+                1252,
+                1253
+            ]
+        },
+        {
+            "rank": 3,
+            "idx": 1067,
+            "chunk": "Serializability is a useful concept because it allows programmers to ignore issues related to concurrency when they code transactions. If every transaction has the property that it maintains database consistency if executed alone, then serializability ensures that concurrent executions maintain consistency. However, the protocols required to ensure serializability may allow too little concurrency for certain applications. In these cases, weaker levels of consistency are used. The use of weaker levels of consistency places additional burdens on programmers for ensuring database correctness. The SQL standard also allows a transaction to specify that it may be executed in such a way that it becomes nonserializable with respect to other transactions. For instance, a transaction may operate at the isolation level of read uncommitted , which permits the transaction to read a data item even if it was written by a transaction that has not been committed. SQL provides such features for the benefit of long transactions whose results do not need to be precise. If these transactions were to execute in a serializable fashion, they could interfere with other transactions, causing the others' execution to be delayed. The isolation levels specified by the SQL standard are as follows:  - Serializable usually ensures serializable execution. However, as we shall explain shortly, some database systems implement this isolation level in a manner that may, in certain cases, allow nonserializable executions. - Repeatable read allows only committed data to be read and further requires that, between two reads of a data item by a transaction, no other transaction is allowed to update it. However, the transaction may not be serializable with respect to other transactions. For instance, when it is searching for data satisfying some conditions, a transaction may find some of the data inserted by a committed transaction, but may not find other data inserted by the same transactio",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015873015873015872,
+            "page_number": [
+                1263,
+                1264
+            ]
+        },
+        {
+            "rank": 4,
+            "idx": 1060,
+            "chunk": "er. For example, schedules 1 and 2 are not conflict equivalent. The concept of conflict equivalence leads to the concept of conflict serializability. We say that a schedule S is conflict serializable if it is conflict equivalent to a serial schedule. Thus, schedule 3 is conflict serializable, since it is conflict equivalent to the serial schedule 1. Finally, consider schedule 7 of Figure 17.9; it consists of only the significant operations (that is, the read and write) of transactions T 3 and T 4 . This schedule is not conflict serializable, since it is not equivalent to either the serial schedule &lt;T 3 ,T 4 &gt; or the serial schedule &lt;T 4 , T 3 &gt;.  Figure 17.9 Schedule 7. We now present a simple and efficient method for determining the conflict serializability of a schedule. Consider a schedule S . We construct a directed graph, called a precedence graph , from S . This graph consists of a pair G = ( V, E ), where V is a set of vertices and E is a set of edges. The set of vertices consists of all the transactions participating in the schedule. The set of edges consists of all edges T i → T j for which one of three conditions holds: 1. T i executes write( Q ) before T j executes read( Q ). 2. T i executes read( Q ) before T j executes write( Q ). 3. T i executes write( Q ) before T j executes write( Q ). If an edge T i → T j exists in the precedence graph, then, in any serial schedule S' equivalent to S , T i must appear before T j . For example, the precedence graph for schedule 1 in Figure 17.10a contains the single edge T 1 → T 2 , since all the instructions of T 1 are executed before the first instruction of T 2 is executed. Similarly, Figure 17.10b shows the precedence graph for schedule 2 with the single edge T 2 → T 1 , since all the instructions of T 2 are executed before the first instruction of T 1 is executed.  Figure 17.10 Precedence graph for (a) schedule 1 and (b) schedule 2. Page 817 The precedence graph for",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015625,
+            "page_number": [
+                1255,
+                1256,
+                1257
+            ]
+        },
+        {
+            "rank": 5,
+            "idx": 1059,
+            "chunk": "ent data items. Let I and J be consecutive instructions of a schedule S . If I and J are instructions of different transactions and I and J do not conflict, then we can swap the order of I and J to produce a new schedule S'. S is equivalent to S', since all instructions appear in the same order in both schedules except for I and J , whose order does not matter. Since the write( A ) instruction of T 2 in schedule 3 of Figure 17.6 does not conflict with the read( B ) instruction of T 1 , we can swap these instructions to generate an equivalent schedule, schedule 5, in Figure 17.7. Regardless of the initial system state, schedules 3 and 5 both produce the same final system state. Figure 17.7 Schedule 5-schedule 3 after swapping of a pair of instructions. | Page 815 | |------------| We continue to swap nonconflicting instructions:  - Swap the read( B ) instruction of T 1 with the read( A ) instruction of T 2 . - Swap the write( B ) instruction of T 1 with the write( A ) instruction of T 2 . - Swap the write( B ) instruction of T 1 with the read( A ) instruction of T 2 . The final result of these swaps, schedule 6 of Figure 17.8, is a serial schedule. Note that schedule 6 is exactly the same as schedule 1, but it shows only the read and write instructions. Thus, we have shown that schedule 3 is equivalent to a serial schedule. This equivalence implies that, regardless of the initial system state, schedule 3 produces the same final state as some serial schedule. Figure 17.8 Schedule 6-a serial schedule that is equivalent to schedule 3. If a schedule S can be transformed into a schedule S ′ by a series of swaps of non-conflicting instructions, we say that S and S′ are conflict equivalent . 2 Page 816 Not all serial schedules are conflict equivalent to each other. For example, schedules 1 and 2 are not conflict equivalent. The concept of conflict equivalence leads to the concept of conflict serializability. We say that a schedule S is conflict serializable",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015384615384615385,
+            "page_number": [
+                1254,
+                1255
+            ]
+        },
+        {
+            "rank": 6,
+            "idx": 1087,
+            "chunk": "One protocol that ensures serializability is the two-phase locking protocol . This protocol requires that each transaction issue lock and unlock requests in two phases: 1. Growing phase . A transaction may obtain locks, but may not release any lock. 2. Shrinking phase . A transaction may release locks, but may not obtain any new locks. Initially, a transaction is in the growing phase. The transaction acquires locks as needed. Once the transaction releases a lock, it enters the shrinking phase, and it can issue no more lock requests. For example, transactions T 3 and T 4 are two phase. On the other hand, transactions T 1 and T 2 are not two phase. Note that the unlock instructions do not need to appear at the end of the transaction. For example, in the case of transaction T 3 , we could move the unlock( B ) instruction to just after the lock-X( A ) instruction and still retain the twophase locking property. We can show that the two-phase locking protocol ensures conflict serializability. Consider any transaction. The point in the schedule where the transaction has obtained its final lock (the end of its growing phase) is called the lock point of the transaction. Now, transactions can be ordered according to their lock points-this ordering is, in fact, a serializability ordering for the transactions. We leave the proof as an exercise for you to do (see Practice Exercise 18.1).  Two-phase locking does not ensure freedom from deadlock. Observe that transactions T 3 and T 4 are two phase, but, in schedule 2 (Figure 18.7), they are deadlocked. Recall from Section 17.7.2 that, in addition to being serializable, schedules should be cascadeless. Cascading rollback may occur under two-phase locking. As an illustration, consider the partial schedule of Figure 18.8. Each transaction observes the two-phase locking protocol, but the failure of T 5 after the read(A) step of T 7 leads to cascading rollback of T 6 and T 7 . Figure 18.8 Partial schedule under two-pha",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015151515151515152,
+            "page_number": [
+                1295,
+                1296
+            ]
+        },
+        {
+            "rank": 7,
+            "idx": 1085,
+            "chunk": "ating when a transaction may lock and unlock each of the data items. Locking protocols restrict the number of possible schedules. The set of all such schedules is a proper subset of all possible serializable schedules. We shall present several locking protocols that allow only conflict-serializable schedules, and thereby ensure isolation. Before doing so, we introduce some terminology. Let { T 0 , T 1 ,..., T n } be a set of transactions participating in a schedule S. We say that T i precedes T j in S , written T i → T j, if there exists a data item Q such that T i has held lock mode A on Q , and Tj has held lock mode B on Q later, and comp( A,B ) = false. If T i → T j , then that precedence implies that in any equivalent serial schedule, T i must appear before T j . Observe that this graph is similar to the precedence graph that we used in Section 17.6 to test for conflict serializability. Conflicts between instructions correspond to noncompatibility of lock modes. We say that a schedule S is legal under a given locking protocol if S is a possible schedule for a set of transactions that follows the rules of the locking protocol. We say that a locking protocol ensures conflict serializability if and only if all legal schedules are conflict serializable; in other words, for all legal schedules the associated → relation is acyclic.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014925373134328358,
+            "page_number": [
+                1293
+            ]
+        },
+        {
+            "rank": 8,
+            "idx": 1076,
+            "chunk": "sider two transactions T and T ′. In a serializable execution, either T sees all the updates made by T′ or T′ sees all the updates made by T , because one must follow the other in the serialization order. Under snapshot isolation, there are cases where neither transaction sees the updates of the other. This is a situation that cannot occur in a serializable execution. In many (indeed, most) cases, the data accesses by the two transactions do not conflict and there is no problem. However, if T reads some data item that T′ updates and T′ reads some data item that T updates, it is possible that both transactions fail to read the update made by the other. The result, as we shall see in Chapter 18, may be an inconsistent database state that, of course, could not be obtained in any serializable execution. Oracle, PostgreSQL, and SQL Server offer the option of snapshot isolation. Oracle and PostgreSQL versions prior to PostgreSQL 9.1 implement the serializable isolation level using snapshot isolation. As a result, their implementation of serializability can, in exceptional circumstances, result in a nonserializable execution being allowed. SQL Server instead includes an additional isolation level beyond the standard ones, called snapshot , to offer the option of snapshot isolation. PostgreSQL versions subsequent to 9.1 implement a form of concurrency control called serializable snapshot isolation, which provides the benefits of snapshot isolation while ensuring serializability.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014705882352941176,
+            "page_number": [
+                1271
+            ]
+        },
+        {
+            "rank": 9,
+            "idx": 1055,
+            "chunk": "edule 2. These schedules are serial : Each serial schedule consists of a sequence of instructions from various transactions, where the instructions belonging to one single transaction appear together in that schedule. Recalling a well-known formula from combinatorics, we note that, for a set of n transactions, there exist n factorial ( n !) different valid serial schedules. When the database system executes several transactions concurrently, the corresponding schedule no longer needs to be serial. If two transactions are running concurrently, the operating system may execute one transaction for a little while, then perform a context switch, execute the second transaction for some time, and then switch back to the first transaction for some time, and so on. With multiple transactions, the CPU time is shared among all the transactions. Several execution sequences are possible, since the various instructions from both transactions may now be interleaved. In general, it is not possible to predict exactly how many instructions of a transaction will be executed before the CPU switches to another transaction. 1 Returning to our previous example, suppose that the two transactions are executed concurrently. One possible schedule appears in Figure 17.4. After this execution takes place, we arrive at the same state as the one in which the transactions are executed serially in the order T 1 followed by T A + B is indeed preserved. Page 812 2 . The sum  Figure 17.4 Schedule 3-a concurrent schedule equivalent to schedule 1. Not all concurrent executions result in a correct state. T o illustrate, consider the schedule of Figure 17.5. After the execution of this schedule, we arrive at a state where the final values of accounts A and B are $950 and $2100, respectively. This final state is an inconsistent state, since we have gained $50 in the process of the concurrent execution. Indeed, the sum A + B is not preserved by the execution of the two transactions. --- Pag",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014492753623188406,
+            "page_number": [
+                1249,
+                1250
+            ]
+        },
+        {
+            "rank": 10,
+            "idx": 1118,
+            "chunk": "The locking protocols that we have described thus far determine the order between every pair of conflicting transactions at execution time by the first lock that both members of the pair request that involves incompatible modes. Another method for determining the serializability order is to select an ordering among transactions in advance. The most common method for doing so is to use a timestamp-ordering scheme.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014285714285714285,
+            "page_number": [
+                1327
+            ]
+        }
+    ],
+    "full_response": "            A transaction is considered serializable if it can be executed in a serial schedule, meaning that the operations of the transaction can be ordered in a way that ensures that the final state of the database is the same as if the transaction were executed alone in a serial order. In other words, the transactions can be executed one after another without any conflicts.\n\n            A transaction is conflict-serializable if it is conflict equivalent to a serial schedule. This means that while the transactions may not be executed in a strict serial order, the final state of the database after all transactions are executed is the same as if they were executed in a serial order.\n\n            **Example for Serializability:**\n\n            Consider a simple database with two accounts, A and B, and two transactions, T1 and T2.\n\n            - **T1:** Transfer $10 from account B to account A.\n            - **T2:** Transfer $20 from account A to account B.\n\n            If we execute these transactions in a serial order:\n\n            1. T1: Transfer $10 from B to A.\n            2. T2: Transfer $20 from A to B.\n\n            The final state of the accounts would be:\n            - Account A: $100\n            - Account B: $100\n\n            If we try to execute these transactions in a non-serial order, we need to ensure that the final state remains the same. For example, if T2 is executed before T1:\n\n            1. T2: Transfer $20 from A to B.\n            2. T1: Transfer $10 from B to A.\n\n            The final state of the accounts would still be:\n            - Account A: $100\n            - Account B: $100\n\n            This shows that the transactions are serializable.\n\n            **Example for Conflict-Serializability:**\n\n            Consider the same transactions T1 and T2",
+    "is_contextualizing_query": true,
+    "contextualized_query": "What does it mean for a transaction to be serializable? How about conflict-serializable? Give examples for both.",
+    "original_query": "What does it mean for a transaction to be serializable? How about conflict-serializable? Give examples for both.",
+    "chat_history": [
+        {
+            "role": "user",
+            "content": "In recovery, explain the importance of buffer space and how it’s used?"
+        },
+        {
+            "role": "assistant",
+            "content": "In recovery, the buffer space plays a crucial role in ensuring that the database system can correctly recover from crashes. Here’s how buffer space is important and how it is used:\n\n1. **Buffer Space Management**: The buffer space is used to temporarily store database blocks that are being accessed or modified. This allows the database system to quickly fetch and update data without having to repeatedly access the disk, which can be slow. \n\n2. **Eviction Policy**: When the buffer space is needed for another block, the buffer manager must evict (remove) a block from the buffer. This is necessary to make room for new blocks. The eviction policy is typically the least recently used (LRU) method, where the block that was last accessed the least is thrown out to make space for new blocks. However, for database applications, this policy can be improved upon to better manage the buffer.\n\n3. **Log Records**: Recovery algorithms rely on log records to undo or redo changes made by transactions. These log records are stored in the buffer. When a transaction commits, the log records are written to stable storage (e.g., disk). If a crash occurs before the log records can be written to disk, the recovery process uses these log records to restore the database to a consistent state.\n\n4. **Transaction Modifications**: During a transaction, if the database modifications occur while the transaction is still active, the transaction is said to use the immediate modification technique. This means that the transaction modifies the database blocks in the buffer, and these changes are not yet written to disk. Log records capture these changes. If a crash occurs, the recovery process uses these log records to undo the changes made by the transaction.\n\n5. **Deferred Modification**: In deferred modification, transactions make local copies of all updated data items. This means that the changes are not immediately written to the buffer. Instead, they are stored in the buffer until the transaction commits. Log records capture these changes. If a crash occurs, the recovery process"
+        },
+        {
+            "role": "user",
+            "content": "What is ARIES, what does it consist of, and what connection does it have to recovery?"
+        },
+        {
+            "role": "assistant",
+            "content": "            ARIES (A Recovery Implementation for SQL) is a sophisticated recovery algorithm designed for SQL databases. It is a state-of-the-art recovery method that incorporates various optimizations to reduce recovery time and minimize logging overhead. Here’s a breakdown of what ARIES consists of and its connection to recovery:\n\n### What ARIES Consists Of:\n\n1. **Log Sequence Number (LSN):**\n   - Each log record in ARIES has a unique LSN that identifies the record. This LSN is used to locate the log record on disk and to track the sequence of operations.\n   - The LSN is composed of a file number and an offset within the file, allowing for efficient disk access.\n\n2. **PageLSN (Page Log Sequence Number):**\n   - Each database page maintains a PageLSN, which is the LSN of the log record that last updated the page.\n   - During recovery, only log records with LSNs less than or equal to the PageLSN of a page need to be executed, as the changes are already reflected on the page.\n\n3. **Dirty Page Table:**\n   - ARIES uses a DirtyPageTable to minimize unnecessary redo operations during recovery. This table keeps track of pages that have been updated but not yet written to disk.\n\n4. **Checkpointing Scheme:**\n   - ARIES employs a fuzzy-checkpointing scheme that records only information about dirty pages and associated metadata. This reduces the amount of information logged and minimizes the overhead of checkpointing.\n\n5. **Redo and Undo Passes:**\n   - The recovery process is divided into three passes: Analysis, Redo, and Undo.\n   - The Analysis pass determines which transactions to undo, which pages were dirty at the time of the crash, and the starting LSN for the Redo pass.\n   - The Redo pass starts from the determined position and performs a redo, repeating the history to bring the database to a state it was in before the crash"
+        },
+        {
+            "role": "user",
+            "content": "Explain the ACID principles in depth and each principle’s relation with each other?"
+        },
+        {
+            "role": "assistant",
+            "content": "The ACID (Atomicity, Consistency, Isolation, Durability) properties are fundamental principles that ensure the reliability and correctness of database transactions. Each principle plays a critical role in ensuring that transactions are executed correctly and reliably, even in the presence of concurrent operations and system failures. Let's explore each principle in depth and discuss their interrelations:\n\n1. **Atomicity**:\n   - **Definition**: Atomicity ensures that a transaction is treated as a single, indivisible unit of work. Either all of the operations within a transaction are completed successfully, or none of them are. In other words, a transaction is either fully committed or fully rolled back.\n   - **Relation to Others**: Atomicity is the foundation upon which the other ACID properties are built. Without atomicity, a transaction could leave the database in an inconsistent state, making it impossible to recover the database to a consistent state after a failure.\n   - **Example**: Consider a transaction that transfers $50 from account A to account B. If the transfer is atomic, the transaction must either complete successfully (resulting in $1000 in A and $2500 in B) or fail completely (resulting in no change to the account balances).\n\n2. **Consistency**:\n   - **Definition**: Consistency ensures that a transaction transforms the database from one consistent state to another consistent state. The database must remain in a valid state after the transaction completes, even if the transaction fails.\n   - **Relation to Others**: Consistency is closely related to atomicity. A transaction must maintain the database's integrity constraints (e.g., ensuring that the sum of account balances remains unchanged) before and after the transaction. If a transaction fails, the database must be restored to its state before the transaction started.\n   - **Example**: In the account transfer example, the consistency requirement ensures that the sum of account balances (A + B) remains unchanged. If the transaction fails, the database must"
+        }
+    ]
+}

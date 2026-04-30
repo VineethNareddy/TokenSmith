@@ -1,0 +1,163 @@
+{
+    "timestamp": "2026-04-25T18:12:34.650122",
+    "query": "What is the difference between a shared lock and an exclusive lock?",
+    "chat_request_params": {
+        "system_prompt": "baseline",
+        "max_tokens": 400
+    },
+    "config_state": {
+        "chunk_mode": "recursive_sections",
+        "chunk_size": 2000,
+        "chunk_overlap": 200,
+        "paragraph_min_chars": 50,
+        "context_window_size": 10,
+        "context_overlap_sentences": 1,
+        "hybrid_max_para_chars": 800,
+        "top_k": 10,
+        "num_candidates": 50,
+        "embed_model": "models/Qwen3-Embedding-4B-Q5_K_M.gguf",
+        "ensemble_method": "rrf",
+        "rrf_k": 60,
+        "ranker_weights": {
+            "faiss": 1,
+            "bm25": 0,
+            "index_keywords": 0
+        },
+        "rerank_mode": "cross_encoder",
+        "rerank_top_k": 5,
+        "max_gen_tokens": 400,
+        "gen_model": "models/qwen2.5-3b-instruct-q8_0.gguf",
+        "system_prompt_mode": "baseline",
+        "disable_chunks": false,
+        "use_golden_chunks": false,
+        "output_mode": "terminal",
+        "metrics": [
+            "all"
+        ],
+        "use_hyde": false,
+        "hyde_max_tokens": 300,
+        "use_double_prompt": false,
+        "enable_history": true,
+        "max_history_turns": 3,
+        "use_indexed_chunks": false,
+        "extracted_index_path": "data/extracted_index.json",
+        "page_to_chunk_map_path": "index/sections/textbook_index_page_to_chunk_map.json",
+        "enable_topic_extraction": true
+    },
+    "top_k": 10,
+    "retrieved_chunks": [
+        {
+            "rank": 1,
+            "idx": 1088,
+            "chunk": "Description: Chapter 18 Section 18.1  Lock-Based Protocols Section 18.1.1 Locks Content: There are various modes in which a data item may be locked. In this section, we restrict our attention to two modes: 1. Shared . If a transaction T i has obtained a sharedmode lock (denoted by S) on item Q, then T i can read, but cannot write, Q. 2. Exclusive . If a transaction T i has obtained an exclusive-mode lock (denoted by X) on item Q , then T i can both read and write Q . Page 836 We require that every transaction request a lock in an appropriate mode on data item Q , depending on the types of operations that it will perform on Q . The transaction makes the request to the concurrency-control manager. The transaction can proceed with the operation only after the concurrency-control manager grants the lock to the transaction. The use of these two lock modes allows multiple transactions to read a data item but limits write access to just one transaction at a time. To state this more generally, given a set of lock modes, we can define a compatibility function on them as follows: Let A and B represent arbitrary lock modes. Suppose that a transaction T i requests a lock of mode A on item Q on which transaction T j ( T i ≠ T j ) currently holds a lock of mode B . If transaction T i can be granted a lock on Q immediately, in spite of the presence of the mode B lock, then we say mode A is compatible with mode B . Such a function can be represented conveniently by a matrix. The compatibility relation between the two modes of locking discussed in this section appears in the matrix comp of Figure 18.1. An element comp( A, B ) of the matrix has the value true if and only if mode A is compatible with mode B .  Figure 18.1 Lock-compatibility matrix comp. Note that shared mode is compatible with shared mode, but not with exclusive mode. At any time, several sharedmode locks can be held simultaneously (by different transactions) on a particular data item",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.01639344262295082,
+            "page_number": [
+                1275,
+                1288
+            ]
+        },
+        {
+            "rank": 2,
+            "idx": 1089,
+            "chunk": "Description: Chapter 18 Section 18.1  Lock-Based Protocols Section 18.1.1 Locks Content: . At any time, several sharedmode locks can be held simultaneously (by different transactions) on a particular data item. A subsequent exclusive-mode lock request has to wait until the currently held shared-mode locks are released. A transaction requests a shared lock on data item Q by executing the lock-S( Q ) instruction. Similarly, a transaction requests an exclusive lock through the lock-X( Q ) instruction. A transaction can unlock a data item Q by the unlock( Q ) instruction. To access a data item, transaction T i must first lock that item. If the data item is already locked by another transaction in an incompatible mode, the concurrencycontrol manager will not grant the lock until all incompatible locks held by other transactions have been released. Thus, T i is made to wait until all incompatible locks held by other transactions have been released.  Transaction T i may unlock a data item that it had locked at some earlier point. Note that a transaction must hold a lock on a data item as long as it accesses that item. Moreover, it is not necessarily desirable for a transaction to unlock a data item immediately after its final access of that data item, since serializability may not be ensured. As an illustration, consider again the banking example that we introduced in Chapter 17. Let A and B be two accounts that are accessed by transactions T 1 and T 2 . T ransaction T 1 transfers $50 from account B to account A (Figure 18.2). Transaction T 2 displays the total amount of money in accounts A and Bthat is, the sum A + A (Figure 18.3). Page 837 Figure 18.2 Transaction T 1 . Figure 18.3 Transaction T 2 .  Suppose that the values of accounts A and B are $100 and $200, respectively. If these two transactions are executed serially, either in the order T 1 , T 2 or the order T 2 , T 1 , then transaction T 2 will display the value $300",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.016129032258064516,
+            "page_number": [
+                1288,
+                1289,
+                1290
+            ]
+        },
+        {
+            "rank": 3,
+            "idx": 1093,
+            "chunk": "Description: Chapter 18 Section 18.1  Lock-Based Protocols Section 18.1.2 Granting of Locks Content: Page 841 When a transaction requests a lock on a data item in a particular mode, and no other transaction has a lock on the same data item in a conflicting mode, the lock can be granted. However, care must be taken to avoid the following scenario. Suppose a transaction T 2 has a shared-mode lock on a data item, and another transaction T 1 requests an exclusive-mode lock on the data item. T 1 has to wait for T 2 to release the sharedmode lock. Meanwhile, a transaction T 3 may request a shared-mode lock on the same data item. The lock request is compatible with the lock granted to T 2 , so T 3 may be granted the shared-mode lock. At this point T 2 may release the lock, but still T 1 has to wait for T 3 to finish. But again, there may be a new transaction T 4 that requests a shared-mode lock on the same data item, and is granted the lock before T 3 releases it. In fact, it is possible that there is a sequence of transactions that each requests a sharedmode lock on the data item, and each transaction releases the lock a short while after it is granted, but T 1 never gets the exclusive-mode lock on the data item. The transaction T 1 may never make progress, and is said to be starved . We can avoid starvation of transactions by granting locks in the following manner: When a transaction T i requests a lock on a data item Q in a particular mode M, the concurrency-control manager grants the lock provided that: - There is no other transaction holding a lock on Q in a mode that conflicts with M .  - There is no other transaction that is waiting for a lock on Q and that made its lock request before T i . Thus, a lock request will never get blocked by a lock request that is made later.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015873015873015872,
+            "page_number": [
+                1294,
+                1295
+            ]
+        },
+        {
+            "rank": 4,
+            "idx": 1096,
+            "chunk": "Description: Chapter 18 Section 18.1  Lock-Based Protocols Section 18.1.3 The Two-Phase Locking Protocol Content: . We shall provide a mechanism for upgrading a shared lock to an exclusive lock, and downgrading an exclusive lock to a shared lock. We denote conversion from shared to exclusive modes by upgrade , and from exclusive to shared by downgrade . Lock conversion cannot be allowed arbitrarily. Rather, upgrading can take place in only the growing phase, whereas downgrading can take place in only the shrinking phase. Returning to our example, transactions T 8 and T 9 can run concurrently under the refined two-phase locking protocol, as shown in the incomplete schedule of Figure 18.9, where only some of the locking instructions are shown.  Figure 18.9 Incomplete schedule with a lock conversion. Note that a transaction attempting to upgrade a lock on an item Q may be forced to wait. This enforced wait occurs if Q is currently locked by another transaction in shared mode. Just like the basic two-phase locking protocol, two-phase locking with lock conversion generates only conflictserializable schedules, and transactions can be serialized by their lock points. Further, if exclusive locks are held until the end of the transaction, the schedules are cascadeless. For a set of transactions, there may be conflict-serializable schedules that cannot be obtained through the two-phase locking protocol. However, to obtain conflict-serializable schedules through non-two-phase locking protocols, we need either to have additional information about the transactions or to impose some structure or ordering on the set of data items in the database. We shall see examples when we consider other locking protocols later in this chapter.  Strict two-phase locking and rigorous two-phase locking (with lock conversions) are used extensively in commercial database systems",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015625,
+            "page_number": [
+                1297,
+                1298,
+                1299
+            ]
+        },
+        {
+            "rank": 5,
+            "idx": 1091,
+            "chunk": "Description: Chapter 18 Section 18.1  Lock-Based Protocols Section 18.1.1 Locks Content: . Other schedules are possible. T 4 will not print out an inconsistent result in any of them; we shall see why later. Page 839 Unfortunately, locking can lead to an undesirable situation. Consider the partial schedule of Figure 18.7 for T 3 and T 4 . Since T 3 is holding an exclusive-mode lock on B and T 4 is requesting a shared-mode lock on B , T 4 is waiting for T 3 to unlock B . Similarly, since T 4 is holding a shared-mode lock on A and T 3 is requesting an exclusivemode lock on A , T 3 is waiting for T 4 to unlock A . Thus, we have arrived at a state where neither of these transactions can ever proceed with its normal execution. This situation is called deadlock . When deadlock occurs, the system must roll back one of the two transactions. Once a transaction has been rolled back, the data items that were locked by that transaction are unlocked. These data items are then available to the other transaction, which can continue with its execution. We shall return to the issue of deadlock handling in Section 18.2. Figure 18.7 Schedule 2.  Page 840 If we do not use locking, or if we unlock data items too soon after reading or writing them, we may get inconsistent states. On the other hand, if we do not unlock a data item before requesting a lock on another data item, deadlocks may occur. There are ways to avoid deadlock in some situations, as we shall see in Section 18.1.5. However, in general, deadlocks are a necessary evil associated with locking, if we want to avoid inconsistent states. Deadlocks are definitely preferable to inconsistent states, since they can be handled by rolling back transactions, whereas inconsistent states may lead to real-world problems that cannot be handled by the database system. We shall require that each transaction in the system follow a set of rules, called a locking protocol , indicating when a transaction may lock and unlock each of the data items. Locking protocols restrict the number of possible schedules",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015384615384615385,
+            "page_number": [
+                1292,
+                1293
+            ]
+        },
+        {
+            "rank": 6,
+            "idx": 1090,
+            "chunk": "Description: Chapter 18 Section 18.1  Lock-Based Protocols Section 18.1.1 Locks Content: . If these two transactions are executed serially, either in the order T 1 , T 2 or the order T 2 , T 1 , then transaction T 2 will display the value $300. If, however, these transactions are executed concurrently, then schedule 1, in Figure 18.4, is possible. In this case, transaction T 2 displays $250, which is incorrect. The reason for this mistake is that the transaction T 1 unlocked data item B too early, as a result of which T 2 saw an inconsistent state. Figure 18.4 Schedule 1. The schedule shows the actions executed by the transactions, as well as the points at which the concurrencycontrol manager grants the locks. The transaction making a lock request cannot execute its next action until the concurrency-control manager grants the lock. Hence, the lock must be granted in the interval of time between the lock-request operation and the following action of the transaction. Exactly when within this interval the lock is granted is not important; we can safely assume that the lock is granted just before the following action of the transaction. We shall therefore drop the column depicting the actions of the concurrency-control manager from all schedules depicted in the rest of the chapter. We let you infer when locks are granted.  Page 838 Suppose now that unlocking is delayed to the end of the transaction. Transaction T 3 corresponds to T 1 with unlocking delayed (Figure 18.5). Transaction T 4 corresponds to T 2 with unlocking delayed (Figure 18.6). Figure 18.5 Transaction T 3 (transaction T 1 with unlocking delayed).  Figure 18.6 Transaction T 4 (transaction T 2 with unlocking delayed). You should verify that the sequence of reads and writes in schedule 1, which lead to an incorrect total of $250 being displayed, is no longer possible with T 3 and T 4 . Other schedules are possible. T 4 will not print out an inconsistent result in any of them; we shall see why later",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015151515151515152,
+            "page_number": [
+                1290,
+                1291,
+                1292
+            ]
+        },
+        {
+            "rank": 7,
+            "idx": 1097,
+            "chunk": "Description: Chapter 18 Section 18.1  Lock-Based Protocols Section 18.1.3 The Two-Phase Locking Protocol Content: .  Strict two-phase locking and rigorous two-phase locking (with lock conversions) are used extensively in commercial database systems. Page 844 A simple but widely used scheme automatically generates the appropriate lock and unlock instructions for a transaction, on the basis of read and write requests from the transaction: - When a transaction T i issues a read( Q ) operation, the system issues a lock-S( Q ) instruction followed by the read( Q ) instruction. - When T i issues a write( Q ) operation, the system checks to see whether T i already holds a shared lock on Q . If it does, then the system issues an upgrade( Q ) instruction, followed by the write( Q ) instruction. Otherwise, the system issues a lock-X( Q ) instruction, followed by the write( Q ) instruction. - All locks obtained by a transaction are unlocked after that transaction commits or aborts.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014925373134328358,
+            "page_number": [
+                1299
+            ]
+        },
+        {
+            "rank": 8,
+            "idx": 1094,
+            "chunk": "Description: Chapter 18 Section 18.1  Lock-Based Protocols Section 18.1.3 The Two-Phase Locking Protocol Content: One protocol that ensures serializability is the two-phase locking protocol . This protocol requires that each transaction issue lock and unlock requests in two phases: 1. Growing phase . A transaction may obtain locks, but may not release any lock. 2. Shrinking phase . A transaction may release locks, but may not obtain any new locks. Initially, a transaction is in the growing phase. The transaction acquires locks as needed. Once the transaction releases a lock, it enters the shrinking phase, and it can issue no more lock requests. For example, transactions T 3 and T 4 are two phase. On the other hand, transactions T 1 and T 2 are not two phase. Note that the unlock instructions do not need to appear at the end of the transaction. For example, in the case of transaction T 3 , we could move the unlock( B ) instruction to just after the lock-X( A ) instruction and still retain the twophase locking property. We can show that the two-phase locking protocol ensures conflict serializability. Consider any transaction. The point in the schedule where the transaction has obtained its final lock (the end of its growing phase) is called the lock point of the transaction. Now, transactions can be ordered according to their lock points-this ordering is, in fact, a serializability ordering for the transactions. We leave the proof as an exercise for you to do (see Practice Exercise 18.1).  Two-phase locking does not ensure freedom from deadlock. Observe that transactions T 3 and T 4 are two phase, but, in schedule 2 (Figure 18.7), they are deadlocked. Recall from Section 17.7.2 that, in addition to being serializable, schedules should be cascadeless. Cascading rollback may occur under two-phase locking. As an illustration, consider the partial schedule of Figure 18.8. Each transaction observes the two-phase locking protocol, but the failure of T 5 after the read(A) step of T 7 leads to cascading rollback of T 6 and T 7",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014705882352941176,
+            "page_number": [
+                1295,
+                1296
+            ]
+        },
+        {
+            "rank": 9,
+            "idx": 1098,
+            "chunk": "Description: Chapter 18 Section 18.1  Lock-Based Protocols Section 18.1.4 Implementation of Locking Content: A lock manager can be implemented as a process that receives messages from transactions and sends messages in reply. The lock-manager process replies to lock-request messages with lock-grant messages, or with messages requesting rollback of the transaction (in case of deadlocks). Unlock messages require only an acknowledgment in response, but may result in a grant message to another waiting transaction.  The lock manager uses this data structure: For each data item that is currently locked, it maintains a linked list of records, one for each request, in the order in which the requests arrived. It uses a hash table, indexed on the name of a data item, to find the linked list (if any) for a data item; this table is called the lock table . Each record of the linked list for a data item notes which transaction made the request, and what lock mode it requested. The record also notes if the request has currently been granted. Figure 18.10 shows an example of a lock table. The table contains locks for five different data items, I4, I7, I23, I44, and I912. The lock table uses overflow chaining, so there is a linked list of data items for each entry in the lock table. There is also a list of transactions that have been granted locks, or are waiting for locks, for each of the data items. Granted locks are the rectangles filled in a darker shade, while waiting requests are the rectangles filled in a lighter shade. We have omitted the lock mode to keep the figure simple. It can be seen, for example, that T23 has been granted locks on I912 and I7 and is waiting for a lock on I4.  Figure 18.10 Lock table. Although the figure does not show it, the lock table should also maintain an index on transaction identifiers so that it is possible to determine efficiently the set of locks held by a given transaction",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014492753623188406,
+            "page_number": [
+                1299,
+                1300,
+                1301
+            ]
+        },
+        {
+            "rank": 10,
+            "idx": 1178,
+            "chunk": "Description: Chapter 18 Section 18.10  Advanced Topics in Concurrency Control Section 18.10.5 Concurrency Control with Operations Content: . We can define a locking protocol to handle the preceding situation by defining an increment lock . The increment lock is compatible with itself but is not compatible with shared and exclusive locks. Figure 18.25 shows a lockcompatibility matrix for three lock modes: share mode, exclusive mode, and increment mode. Page 893 Figure 18.25 Lock-compatibility matrix with increment lock mode. As another example of special-purpose concurrency control for operations, consider an insert operation on a B + tree index which releases locks early, as we saw in Section 18.10.2. In this case, there is no special lock mode, but holding locks on leaf nodes in a two-phase manner (or using next-key locking) as we saw in Section 18.10.2 ensures serializability. The insert operation may have modified several nodes of the B + -tree index. Other transactions may have read and updated these nodes further while processing other operations. T o roll back the insertion, we would have to delete the record inserted by T i ; deletion is the compensating action for insertion. The result is a correct, consistent B + -tree, but not necessarily one with exactly the same structure as the one we had before T i started. While operation locking can be done in a way that ensures serializability, in some cases it may even be used in a way that does not guarantee serializability, but where violations may be acceptable. Consider the case of concert tickets, where every transaction needs to access and update the total ticket sales. We can have an operation increment\\_conditional( v , n ) which increments v by n , provided the resultant value would be &gt; 0; the operation returns a status of success in case the resultant value is &gt; 0 and returns failure otherwise. Consider a transaction T i executed to purchase tickets. T o book three tickets, where variable avail-tickets indicates the number of available tickets, the transaction can execute increment\\_conditional( avail\\_tickets , -3)",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014285714285714285,
+            "page_number": [
+                1378
+            ]
+        }
+    ],
+    "full_response": "The primary difference between a shared lock and an exclusive lock lies in their permissions and usage:\n\n- **Shared Lock (S):** \n  - Allows multiple transactions to read the data item simultaneously.\n  - A transaction holding a shared lock can read the data item but cannot write to it.\n  - Multiple transactions can hold shared locks on the same data item at the same time.\n\n- **Exclusive Lock (X):**\n  - Allows only one transaction to access (read or write) the data item at a time.\n  - A transaction holding an exclusive lock can both read and write the data item.\n  - Only one transaction can hold an exclusive lock on a data item at any given time.\n\nThis distinction ensures that exclusive locks prevent other transactions from modifying the data item until the exclusive lock is released, which helps maintain data integrity and consistency. Shared locks, on the other hand, allow concurrent reads but do not prevent other transactions from reading the data item, which can lead to more efficient use of resources in certain scenarios."
+}

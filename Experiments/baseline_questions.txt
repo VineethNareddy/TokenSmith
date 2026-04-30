@@ -1,0 +1,19 @@
+What is the difference between a shared lock and an exclusive lock?
+
+Explain the growing and shrinking phrase in 2 phase locking?
+
+Compare rigorous 2 phase locking to regular 2 phase locking?
+
+What is the importance of deadlock detection in 2 phase locking?
+
+What are the main components to recovery and why are they needed?
+
+In recovery, explain the importance of buffer space and how it’s used?
+
+What is ARIES, what does it consist of, and what connection does it have to recovery?
+
+Explain the ACID principles in depth and each principle’s relation with each other?
+
+What does it mean for a transaction to be serializable? How about conflict-serializable? Give examples for both.
+
+What would happen if we didn’t have some of the ACID principles? Can you give me an example of this?

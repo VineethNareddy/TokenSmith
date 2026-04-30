@@ -1,0 +1,168 @@
+{
+    "timestamp": "2026-04-25T19:09:22.294870",
+    "query": "Explain the growing and shrinking phrase in 2 phase locking?",
+    "chat_request_params": {
+        "system_prompt": "baseline",
+        "max_tokens": 400
+    },
+    "config_state": {
+        "chunk_mode": "context_aware",
+        "chunk_size": 2000,
+        "chunk_overlap": 200,
+        "paragraph_min_chars": 50,
+        "context_window_size": 10,
+        "context_overlap_sentences": 1,
+        "hybrid_max_para_chars": 800,
+        "top_k": 10,
+        "num_candidates": 50,
+        "embed_model": "models/Qwen3-Embedding-4B-Q5_K_M.gguf",
+        "ensemble_method": "rrf",
+        "rrf_k": 60,
+        "ranker_weights": {
+            "faiss": 1,
+            "bm25": 0,
+            "index_keywords": 0
+        },
+        "rerank_mode": "cross_encoder",
+        "rerank_top_k": 5,
+        "max_gen_tokens": 400,
+        "gen_model": "models/qwen2.5-3b-instruct-q8_0.gguf",
+        "system_prompt_mode": "baseline",
+        "disable_chunks": false,
+        "use_golden_chunks": false,
+        "output_mode": "terminal",
+        "metrics": [
+            "all"
+        ],
+        "use_hyde": false,
+        "hyde_max_tokens": 300,
+        "use_double_prompt": false,
+        "enable_history": true,
+        "max_history_turns": 3,
+        "use_indexed_chunks": false,
+        "extracted_index_path": "data/extracted_index.json",
+        "page_to_chunk_map_path": "index/sections/textbook_index_page_to_chunk_map.json",
+        "enable_topic_extraction": true
+    },
+    "top_k": 10,
+    "retrieved_chunks": [
+        {
+            "rank": 1,
+            "idx": 1528,
+            "chunk": "One protocol that ensures serializability is the two-phase locking protocol . This protocol requires that each transaction issue lock and unlock requests in two phases: 1. Growing phase . A transaction may obtain locks, but may not release any lock. 2. Shrinking phase . A transaction may release locks, but may not obtain any new locks. Initially, a transaction is in the growing phase. The transaction acquires locks as needed. Once the transaction releases a lock, it enters the shrinking phase, and it can issue no more lock requests.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.01639344262295082,
+            "page_number": [
+                1295
+            ]
+        },
+        {
+            "rank": 2,
+            "idx": 1529,
+            "chunk": "Once the transaction releases a lock, it enters the shrinking phase, and it can issue no more lock requests. For example, transactions T 3 and T 4 are two phase. On the other hand, transactions T 1 and T 2 are not two phase. Note that the unlock instructions do not need to appear at the end of the transaction. For example, in the case of transaction T 3 , we could move the unlock( B ) instruction to just after the lock-X( A ) instruction and still retain the twophase locking property. We can show that the two-phase locking protocol ensures conflict serializability. Consider any transaction. The point in the schedule where the transaction has obtained its final lock (the end of its growing phase) is called the lock point of the transaction. Now, transactions can be ordered according to their lock points-this ordering is, in fact, a serializability ordering for the transactions. We leave the proof as an exercise for you to do (see Practice Exercise 18.1).",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.016129032258064516,
+            "page_number": [
+                1295
+            ]
+        },
+        {
+            "rank": 3,
+            "idx": 1505,
+            "chunk": "Instead of locking the entire database, a transaction could instead lock only those data items that it accesses. Under such a policy, the transaction must hold locks long enough to ensure serializability, but for a period short enough not to harm performance excessively. Complicating matters are SQL statements where the data items accessed depend on a where clause, which we discuss in Section 17.10. In Chapter 18, we present the two-phase locking protocol, a simple, widely used technique that ensures serializability. Stated simply, two-phase locking requires a transaction to have two phases, one where it acquires locks but does not release any, and a second phase where the transaction releases locks but does not acquire any. (In practice, locks are usually released only when the transaction completes its execution and has been either committed or aborted.)   seat they selected; however, the situation could be easily resolved by asking the traveler to perform the selection again, with updated seat availability information. It is possible to enforce serializability by allowing only one traveler to do seat selection for a particular flight at a time. However, doing so could cause significant delays as travelers would have to wait for their flight to become available for seat selection; in particular a traveler who takes a long time to make a choice could cause serious problems for other travelers. Instead, any such transaction is typically broken up into a part that requires user interaction and a part that runs exclusively on the database. In the example above, the database transaction would check if the seats chosen by the user are still available, and if so update the seat selection in the database.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015873015873015872,
+            "page_number": [
+                1267,
+                1269
+            ]
+        },
+        {
+            "rank": 4,
+            "idx": 1506,
+            "chunk": "In the example above, the database transaction would check if the seats chosen by the user are still available, and if so update the seat selection in the database. Serializability is ensured only for the transactions that run on the database, without user interaction. Page 825 Further improvements to locking result if we have two kinds of locks: shared and exclusive. Shared locks are used for data that the transaction reads and exclusive locks are used for those it writes. Many transactions can hold shared locks on the same data item at the same time, but a transaction is allowed an exclusive lock on a data item only if no other transaction holds any lock (regardless of whether shared or exclusive) on the data item. This use of two modes of locks along with two-phase locking allows concurrent reading of data while still ensuring serializability.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015625,
+            "page_number": [
+                1269
+            ]
+        },
+        {
+            "rank": 5,
+            "idx": 1579,
+            "chunk": "Do not confuse the locking of an entire relation, as in multiple-granularity locking, with the locking of the data item corresponding to the relation. By locking the data item, a transaction only prevents other transactions from updating information about what tuples are in the relation. Locking is still required on tuples. A transaction that directly accesses a tuple can be granted a lock on the tuples even when another transaction has an exclusive lock on the data item corresponding to the relation itself. The major disadvantage of locking a data item corresponding to the relation, or locking an entire index, is the low degree of concurrency-two transactions that insert different tuples into a relation are prevented from executing concurrently. A better solution is an index-locking technique that avoids locking the whole index. Any transaction that inserts a tuple into a relation must insert information into every index maintained on the relation. We eliminate the phantom phenomenon by imposing a locking protocol for indices. For simplicity we shall consider only B + -tree indices. As we saw in Chapter 14, every search-key value is associated with an index leaf node.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015384615384615385,
+            "page_number": [
+                1324
+            ]
+        },
+        {
+            "rank": 6,
+            "idx": 1524,
+            "chunk": "We shall require that each transaction in the system follow a set of rules, called a locking protocol , indicating when a transaction may lock and unlock each of the data items. Locking protocols restrict the number of possible schedules. The set of all such schedules is a proper subset of all possible serializable schedules. We shall present several locking protocols that allow only conflict-serializable schedules, and thereby ensure isolation. Before doing so, we introduce some terminology. Let { T 0 , T 1 ,..., T n } be a set of transactions participating in a schedule S. We say that T i precedes T j in S , written T i → T j, if there exists a data item Q such that T i has held lock mode A on Q , and Tj has held lock mode B on Q later, and comp( A,B ) = false. If T i → T j , then that precedence implies that in any equivalent serial schedule, T i must appear before T j . Observe that this graph is similar to the precedence graph that we used in Section 17.6 to test for conflict serializability. Conflicts between instructions correspond to noncompatibility of lock modes.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015151515151515152,
+            "page_number": [
+                1293
+            ]
+        },
+        {
+            "rank": 7,
+            "idx": 1530,
+            "chunk": "We leave the proof as an exercise for you to do (see Practice Exercise 18.1).  Two-phase locking does not ensure freedom from deadlock. Observe that transactions T 3 and T 4 are two phase, but, in schedule 2 (Figure 18.7), they are deadlocked. Recall from Section 17.7.2 that, in addition to being serializable, schedules should be cascadeless. Cascading rollback may occur under two-phase locking. As an illustration, consider the partial schedule of Figure 18.8. Each transaction observes the two-phase locking protocol, but the failure of T 5 after the read(A) step of T 7 leads to cascading rollback of T 6 and T 7 . Figure 18.8 Partial schedule under two-phase locking. Cascading rollbacks can be avoided by a modification of two-phase locking called the strict two-phase locking protocol . This protocol requires not only that locking be two phase, but also that all exclusive-mode locks taken by a transaction be held until that transaction commits.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014925373134328358,
+            "page_number": [
+                1295,
+                1296
+            ]
+        },
+        {
+            "rank": 8,
+            "idx": 1596,
+            "chunk": "Write phase . If the validation test succeeds for transaction T i , the temporary local variables that hold the results of any write operations performed by T i are copied to the database. Read-only transactions omit this phase. Each transaction must go through the phases in the order shown. However, phases of concurrently executing transactions can be interleaved. To perform the validation test, we need to know when the various phases of transactions took place. We shall, therefore, associate three different timestamps with each transaction T i : 1. StartTS ( T i ), the time when T i started its execution. 2. ValidationTS ( T i ), the time when T i finished its read phase and started its validation phase.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014705882352941176,
+            "page_number": [
+                1335
+            ]
+        },
+        {
+            "rank": 9,
+            "idx": 1531,
+            "chunk": "This protocol requires not only that locking be two phase, but also that all exclusive-mode locks taken by a transaction be held until that transaction commits. This requirement ensures that any data written by an uncommitted transaction are locked in exclusive mode until the transaction commits, preventing any other transaction from reading the data.  Another variant of two-phase locking is the rigorous twophase locking protocol , which requires that all locks be held until the transaction commits. We can easily verify that, with rigorous two-phase locking, transactions can be serialized in the order in which they commit. Consider the following two transactions, for which we have shown only some of the significant read and write operations: T 8 : read( a 1 ); read( a 2 ); ... read(a n ); write( a 1 ). T 9 : read( a 1 ); read( a 2 ); display( a 1 + a 2 ). Page 843 If we employ the two-phase locking protocol, then T 8 must lock a 1 in exclusive mode. Therefore, any concurrent execution of both transactions amounts to a serial execution. Notice, however, that T 8 needs an exclusive lock on a 1 only at the end of its execution, when it writes a 1 .",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014492753623188406,
+            "page_number": [
+                1296,
+                1297
+            ]
+        },
+        {
+            "rank": 10,
+            "idx": 1567,
+            "chunk": "- Transaction T i can lock a node Q in X, SIX, or IX mode only if T i currently has the parent of Q locked in either IX or SIX mode. - Transaction T i can lock a node only if T i has not previously unlocked any node (i.e., T i is two phase). - Transaction T i can unlock a node Q only if T i currently has none of the children of Q locked. Observe that the multiple-granularity protocol requires that locks be acquired in top-down (root-to-leaf) order, whereas locks must be released in bottom-up (leaf-to-root) order. Deadlock is possible in the multiple-granularity protocol, as it is in the two-phase locking protocol.  As an illustration of the protocol, consider the tree of Figure 18.15 and these transactions: - Suppose that transaction T 21 reads record in file F a . Then, T 21 needs to lock the database, area A 1 , and F a in IS mode (and in that order), and finally to lock in S mode. - Suppose that transaction T 22 modifies record in file F a . Then, T 22 needs to lock the database, area A 1 , and file F a (and in that order) in IX mode, and finally to lock in X mode. - Suppose that transaction T 23 reads all the records in file F a .",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014285714285714285,
+            "page_number": [
+                1318,
+                1319
+            ]
+        }
+    ],
+    "full_response": "In the two-phase locking protocol, the growing phase and shrinking phase are crucial stages that ensure transactions acquire and release locks in a controlled manner to maintain serializability.\n\n1. **Growing Phase**: This is the initial phase where a transaction can acquire locks on database resources but cannot release any locks. Transactions can only obtain locks as needed and are not allowed to release any locks during this phase. The transaction acquires locks as it needs them to access the required data items. This phase continues until the transaction has obtained all necessary locks.\n\n2. **Shrinking Phase**: Once a transaction has acquired all the necessary locks, it enters the shrinking phase. In this phase, the transaction can only release locks but cannot acquire any new locks. The transaction releases locks as it completes its operations and is ready to commit. This phase ensures that the transaction does not hold unnecessary locks and that the locks are released in a controlled manner.\n\nThe key points to remember are:\n- The growing phase is when locks are acquired.\n- The shrinking phase is when locks are released.\n- Transactions must transition from the growing phase to the shrinking phase once they have acquired all required locks.\n- The transition from growing to shrinking phase is marked by the transaction completing its operations and being ready to commit.\n\nThis protocol ensures that transactions acquire locks in a controlled manner, preventing conflicts and ensuring that the overall schedule is serializable.<<</ANSWER>>",
+    "is_contextualizing_query": true,
+    "contextualized_query": "Explain the growing and shrinking phrase in 2 phase locking?",
+    "original_query": "Explain the growing and shrinking phrase in 2 phase locking?",
+    "chat_history": [
+        {
+            "role": "user",
+            "content": "What is the difference between a shared lock and an exclusive lock?"
+        },
+        {
+            "role": "assistant",
+            "content": "A shared lock and an exclusive lock are two types of locks used in database systems to manage concurrent access to data items.\n\n- **Shared Lock (S)**: \n  - Allows multiple transactions to read the same data item simultaneously.\n  - A transaction holding a shared lock can read the data item but cannot write to it.\n  - Multiple transactions can hold shared locks on the same data item at the same time.\n\n- **Exclusive Lock (X)**:\n  - Allows only one transaction to access and modify the data item at a time.\n  - A transaction holding an exclusive lock can both read and write to the data item.\n  - Only one transaction can hold an exclusive lock on a data item at any given time.\n\nThe key difference is that shared locks allow concurrent reading of the same data item, while exclusive locks ensure exclusive access to the data item, preventing other transactions from reading or writing to it until the exclusive lock is released."
+        }
+    ]
+}

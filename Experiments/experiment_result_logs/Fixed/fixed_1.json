@@ -1,0 +1,160 @@
+{
+    "timestamp": "2026-04-25T17:49:02.871664",
+    "query": "What is the difference between a shared lock and an exclusive lock?",
+    "chat_request_params": {
+        "system_prompt": "baseline",
+        "max_tokens": 400
+    },
+    "config_state": {
+        "chunk_mode": "fixed_size",
+        "chunk_size": 2000,
+        "chunk_overlap": 200,
+        "paragraph_min_chars": 50,
+        "context_window_size": 10,
+        "context_overlap_sentences": 1,
+        "hybrid_max_para_chars": 800,
+        "top_k": 10,
+        "num_candidates": 50,
+        "embed_model": "models/Qwen3-Embedding-4B-Q5_K_M.gguf",
+        "ensemble_method": "rrf",
+        "rrf_k": 60,
+        "ranker_weights": {
+            "faiss": 1,
+            "bm25": 0,
+            "index_keywords": 0
+        },
+        "rerank_mode": "cross_encoder",
+        "rerank_top_k": 5,
+        "max_gen_tokens": 400,
+        "gen_model": "models/qwen2.5-3b-instruct-q8_0.gguf",
+        "system_prompt_mode": "baseline",
+        "disable_chunks": false,
+        "use_golden_chunks": false,
+        "output_mode": "terminal",
+        "metrics": [
+            "all"
+        ],
+        "use_hyde": false,
+        "hyde_max_tokens": 300,
+        "use_double_prompt": false,
+        "enable_history": true,
+        "max_history_turns": 3,
+        "use_indexed_chunks": false,
+        "extracted_index_path": "data/extracted_index.json",
+        "page_to_chunk_map_path": "index/sections/textbook_index_page_to_chunk_map.json",
+        "enable_topic_extraction": true
+    },
+    "top_k": 10,
+    "retrieved_chunks": [
+        {
+            "rank": 1,
+            "idx": 1081,
+            "chunk": "There are various modes in which a data item may be locked. In this section, we restrict our attention to two modes: 1. Shared . If a transaction T i has obtained a sharedmode lock (denoted by S) on item Q, then T i can read, but cannot write, Q. 2. Exclusive . If a transaction T i has obtained an exclusive-mode lock (denoted by X) on item Q , then T i can both read and write Q . Page 836 We require that every transaction request a lock in an appropriate mode on data item Q , depending on the types of operations that it will perform on Q . The transaction makes the request to the concurrency-control manager. The transaction can proceed with the operation only after the concurrency-control manager grants the lock to the transaction. The use of these two lock modes allows multiple transactions to read a data item but limits write access to just one transaction at a time. To state this more generally, given a set of lock modes, we can define a compatibility function on them as follows: Let A and B represent arbitrary lock modes. Suppose that a transaction T i requests a lock of mode A on item Q on which transaction T j ( T i ≠ T j ) currently holds a lock of mode B . If transaction T i can be granted a lock on Q immediately, in spite of the presence of the mode B lock, then we say mode A is compatible with mode B . Such a function can be represented conveniently by a matrix. The compatibility relation between the two modes of locking discussed in this section appears in the matrix comp of Figure 18.1. An element comp( A, B ) of the matrix has the value true if and only if mode A is compatible with mode B .  Figure 18.1 Lock-compatibility matrix comp. Note that shared mode is compatible with shared mode, but not with exclusive mode. At any time, several sharedmode locks can be held simultaneously (by different transactions) on a particular data item. A subsequent exclusive-mode lock request has to wait until the currently held shared-mode locks are rele",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.01639344262295082,
+            "page_number": [
+                1275,
+                1288
+            ]
+        },
+        {
+            "rank": 2,
+            "idx": 1073,
+            "chunk": "he transactions that run on the database, without user interaction. Page 825 Further improvements to locking result if we have two kinds of locks: shared and exclusive. Shared locks are used for data that the transaction reads and exclusive locks are used for those it writes. Many transactions can hold shared locks on the same data item at the same time, but a transaction is allowed an exclusive lock on a data item only if no other transaction holds any lock (regardless of whether shared or exclusive) on the data item. This use of two modes of locks along with two-phase locking allows concurrent reading of data while still ensuring serializability.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.016129032258064516,
+            "page_number": [
+                1269
+            ]
+        },
+        {
+            "rank": 3,
+            "idx": 776,
+            "chunk": "Page 606 A process that adds or deletes a tuple from a page may need to move the page contents around; during this period, no other process should read the contents of the page, since they may be inconsistent. Database buffer managers allow processes to get shared and exclusive locks on the buffer. We will study locking in more detail in Chapter 18, but here we discuss a limited form of locking in the context of the buffer manager. The locking system provided by the buffer manager allows a database process to lock a buffer block either in shared mode or in exclusive mode before accessing the block, and to release the lock later, after the access is completed. Here are the rules for locking: - Any number of processes may have shared locks on a block at the same time.  - Only one process is allowed to get an exclusive lock at a time, and further when a process has an exclusive lock, no other process may have a shared lock on the block. Thus, an exclusive lock can be granted only when no other process has a lock on the buffer block. - If a process requests an exclusive lock when a block is already locked in shared or exclusive mode, the request is kept pending until all earlier locks are released. - If a process requests a shared lock when a block is not locked, or already shared locked, the lock may be granted; however, if another process has an exclusive lock, the shared lock is granted only after the exclusive lock has been released. Locks are acquired and released as follows: - Before carrying out any operation on a block, a process must pin the block as we saw earlier. Locks are obtained subsequently and must be released before unpinning the block. - Before reading data from a buffer block, a process must get a shared lock on the block. When it is done reading the data, the process must release the lock. - Before updating the contents of a buffer block, a process must get an exclusive lock on the block; the lock must be released after the update is",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015873015873015872,
+            "page_number": [
+                927,
+                928
+            ]
+        },
+        {
+            "rank": 4,
+            "idx": 1493,
+            "chunk": "The biased protocol is another approach to handling replication. The difference from the majority protocol is that requests for shared locks are given more favorable treatment than requests for exclusive locks. - Shared locks . When a transaction needs to lock data item Q, it simply requests a lock on Q from the lock manager at one node that contains a replica of Q . - Exclusive locks . When a transaction needs to lock data item Q , it requests a lock on Q from the lock manager at all nodes that contain a replica of Q . As before, the response to the request is delayed until it can be granted. The biased scheme has the advantage of imposing less overhead on read operations than does the majority protocol. This savings is especially significant in common cases in which the frequency of read is much greater than the frequency of write. However, the additional overhead on writes is a disadvantage. Furthermore, the biased protocol shares the majority protocol's disadvantage of complexity in handling deadlock.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015625,
+            "page_number": [
+                1749
+            ]
+        },
+        {
+            "rank": 5,
+            "idx": 1082,
+            "chunk": "redmode locks can be held simultaneously (by different transactions) on a particular data item. A subsequent exclusive-mode lock request has to wait until the currently held shared-mode locks are released. A transaction requests a shared lock on data item Q by executing the lock-S( Q ) instruction. Similarly, a transaction requests an exclusive lock through the lock-X( Q ) instruction. A transaction can unlock a data item Q by the unlock( Q ) instruction. To access a data item, transaction T i must first lock that item. If the data item is already locked by another transaction in an incompatible mode, the concurrencycontrol manager will not grant the lock until all incompatible locks held by other transactions have been released. Thus, T i is made to wait until all incompatible locks held by other transactions have been released.  Transaction T i may unlock a data item that it had locked at some earlier point. Note that a transaction must hold a lock on a data item as long as it accesses that item. Moreover, it is not necessarily desirable for a transaction to unlock a data item immediately after its final access of that data item, since serializability may not be ensured. As an illustration, consider again the banking example that we introduced in Chapter 17. Let A and B be two accounts that are accessed by transactions T 1 and T 2 . T ransaction T 1 transfers $50 from account B to account A (Figure 18.2). Transaction T 2 displays the total amount of money in accounts A and Bthat is, the sum A + A (Figure 18.3). Page 837 Figure 18.2 Transaction T 1 . Figure 18.3 Transaction T 2 .  Suppose that the values of accounts A and B are $100 and $200, respectively. If these two transactions are executed serially, either in the order T 1 , T 2 or the order T 2 , T 1 , then transaction T 2 will display the value $300. If, however, these transactions are executed concurrently, then schedule 1, in Figure 18.4, is possible. In this case, transac",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015384615384615385,
+            "page_number": [
+                1288,
+                1289,
+                1290
+            ]
+        },
+        {
+            "rank": 6,
+            "idx": 1086,
+            "chunk": "Page 841 When a transaction requests a lock on a data item in a particular mode, and no other transaction has a lock on the same data item in a conflicting mode, the lock can be granted. However, care must be taken to avoid the following scenario. Suppose a transaction T 2 has a shared-mode lock on a data item, and another transaction T 1 requests an exclusive-mode lock on the data item. T 1 has to wait for T 2 to release the sharedmode lock. Meanwhile, a transaction T 3 may request a shared-mode lock on the same data item. The lock request is compatible with the lock granted to T 2 , so T 3 may be granted the shared-mode lock. At this point T 2 may release the lock, but still T 1 has to wait for T 3 to finish. But again, there may be a new transaction T 4 that requests a shared-mode lock on the same data item, and is granted the lock before T 3 releases it. In fact, it is possible that there is a sequence of transactions that each requests a sharedmode lock on the data item, and each transaction releases the lock a short while after it is granted, but T 1 never gets the exclusive-mode lock on the data item. The transaction T 1 may never make progress, and is said to be starved . We can avoid starvation of transactions by granting locks in the following manner: When a transaction T i requests a lock on a data item Q in a particular mode M, the concurrency-control manager grants the lock provided that: - There is no other transaction holding a lock on Q in a mode that conflicts with M .  - There is no other transaction that is waiting for a lock on Q and that made its lock request before T i . Thus, a lock request will never get blocked by a lock request that is made later.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.015151515151515152,
+            "page_number": [
+                1294,
+                1295
+            ]
+        },
+        {
+            "rank": 7,
+            "idx": 777,
+            "chunk": "reading the data, the process must release the lock. - Before updating the contents of a buffer block, a process must get an exclusive lock on the block; the lock must be released after the update is complete. These rules ensure that a block cannot be updated while another process is reading it, and conversely, a block cannot be read while another process is updating it. These rules are required for safety of buffer access; however, to protect a database system from problems due to concurrent access, these steps are not sufficient: further steps need to be taken. These are discussed further in Chapter 17 and Chapter 18.",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014925373134328358,
+            "page_number": [
+                928
+            ]
+        },
+        {
+            "rank": 8,
+            "idx": 1261,
+            "chunk": ", which are used for mutual exclusion in databases. To avoid the overhead of message passing, in many database systems, server processes implement locking by directly updating the lock table (which is in shared memory) instead of sending lock request messages to a lock manager process. (The lock table is shown in Figure 18.10.) Since multiple server processes may access the lock table in shared memory concurrently, processes must ensure mutual exclusion on access to the lock table. This is typically done by acquiring a mutex (also referred to as a latch) on the lock table, using the test-and-set or compareand-swap instructions on a memory location representing a lock on the lock table. A transaction that wants to acquire a lock by directly updating the lock table in shared memory executes the following steps.  1. Acquire a mutex (latch) on the lock table. 2. Check if the requested lock can be allocated, using the procedure we saw in Section 18.1.4. If it can, update the lock table to indicate the lock is allocated. Otherwise, update the lock table to indicate that the lock request is in the queue for that lock. 3. Release the mutex on the lock table. If a lock cannot be obtained immediately because of a lock conflict, the transaction may periodically read the lock table to check if the lock has been allocated to it due to a lock release, which is described next. Lock release is done as follows:  1. Acquire a mutex on the lock table 2. Remove the entry in the lock table for the lock being released. 3. If there are any other lock requests pending for the data item that can now be allocated to the lock, the lock table is updated to mark those requests as allocated. The rules on which lock requests may be granted are as described in Section 18.1.4. 4. Release the mutex on the lock table. Page 968 To avoid repeated checks on the lock table (an example of the phenomenon of busy waiting), operating system semaphores can be used by the lock",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014705882352941176,
+            "page_number": [
+                1495,
+                1496,
+                1497
+            ]
+        },
+        {
+            "rank": 9,
+            "idx": 1260,
+            "chunk": "dic checkpoints. - Process monitor process : This process monitors other processes, and if any of them fails, it takes recovery actions for the process, such as aborting any transaction being executed by the failed process and then restarting the process. The shared memory contains all shared data, such as: - Buffer pool. - Lock table. - Log buffer, containing log records waiting to be output to the log on stable storage. - Cached query plans, which can be reused if the same query is submitted again. All database processes can access the data in shared memory. Since multiple processes may read or perform updates on data structures in shared memory, there must be a mechanism to ensure mutual exclusion , that is, to ensure that a data structure is modified by at most one process at a time, and no process is reading a data structure while it is being written by other processes. Such mutual exclusion can be implemented by means of operating system functions called semaphores. Alternative implementations, with less overhead, use one of the atomic instructions , test-and-set, or compare-and-swap, which are supported by the computer hardware. See Note 20.1 on page 966 for details of these instructions. All multiprocessor systems today support either the test-and-set or the compare-and-swap atomic instructions. Further details on these instructions may be found in operating systems textbooks.   Page 967 Note that the atomic instructions can be used for mutual exclusion, which is equivalent to supporting exclusive locks, but they do not directly support shared locks. Thus, they cannot be used directly to implement general-purpose locking in databases. Atomic instructions are, however, used to implement short-duration locks, also known as latches, which are used for mutual exclusion in databases. To avoid the overhead of message passing, in many database systems, server processes implement locking by directly updating the lock table (which is",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014492753623188406,
+            "page_number": [
+                1493,
+                1495
+            ]
+        },
+        {
+            "rank": 10,
+            "idx": 1072,
+            "chunk": "Instead of locking the entire database, a transaction could instead lock only those data items that it accesses. Under such a policy, the transaction must hold locks long enough to ensure serializability, but for a period short enough not to harm performance excessively. Complicating matters are SQL statements where the data items accessed depend on a where clause, which we discuss in Section 17.10. In Chapter 18, we present the two-phase locking protocol, a simple, widely used technique that ensures serializability. Stated simply, two-phase locking requires a transaction to have two phases, one where it acquires locks but does not release any, and a second phase where the transaction releases locks but does not acquire any. (In practice, locks are usually released only when the transaction completes its execution and has been either committed or aborted.)   seat they selected; however, the situation could be easily resolved by asking the traveler to perform the selection again, with updated seat availability information. It is possible to enforce serializability by allowing only one traveler to do seat selection for a particular flight at a time. However, doing so could cause significant delays as travelers would have to wait for their flight to become available for seat selection; in particular a traveler who takes a long time to make a choice could cause serious problems for other travelers. Instead, any such transaction is typically broken up into a part that requires user interaction and a part that runs exclusively on the database. In the example above, the database transaction would check if the seats chosen by the user are still available, and if so update the seat selection in the database. Serializability is ensured only for the transactions that run on the database, without user interaction. Page 825 Further improvements to locking result if we have two kinds of locks: shared and exclusive. Shared locks are used for data",
+            "source": "data/silberschatz--extracted_markdown.md",
+            "score": 0.014285714285714285,
+            "page_number": [
+                1267,
+                1269
+            ]
+        }
+    ],
+    "full_response": "A shared lock and an exclusive lock are two different modes of locking used in database systems to manage concurrent transactions.\n\n- **Shared Lock (S)**: A shared lock allows multiple transactions to read the same data item simultaneously. A transaction holding a shared lock can read the data item but cannot write to it. Multiple transactions can hold shared locks on the same data item at the same time.\n\n- **Exclusive Lock (X)**: An exclusive lock is used when a transaction needs to read and write to the same data item. Only one transaction can hold an exclusive lock on a data item at any given time. Once an exclusive lock is granted, no other transaction can obtain a shared or exclusive lock on the same data item until the exclusive lock is released.\n\nIn summary, shared locks allow concurrent reading, while exclusive locks ensure exclusive access to the data item, preventing other transactions from reading or writing until the exclusive lock is released."
+}
